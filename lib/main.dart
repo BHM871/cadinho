@@ -1,6 +1,9 @@
+import 'package:cadinho/config/database_config.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DatabaseConfig.setup();
   runApp(const MyApp());
 }
 
