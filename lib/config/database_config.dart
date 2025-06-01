@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -32,6 +31,7 @@ class DatabaseConfig {
     _db = await openDatabase(
       _path, 
       version: 1, 
+      singleInstance: true,
       onConfigure: _onConfigure,
       onCreate: _onCreate
     );
