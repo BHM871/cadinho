@@ -1,3 +1,5 @@
+import 'package:cadinho/domain/lista.dart';
+
 class Item {
   final int? id;
   final String titulo;
@@ -6,6 +8,7 @@ class Item {
   final double? promocional;
   final int? qtPromocao;
   final int idLista;
+  Lista? lista;
 
   Item({
     this.id, 
@@ -14,7 +17,8 @@ class Item {
     required this.quantidade,
     this.promocional,
     this.qtPromocao,
-    required this.idLista
+    required this.idLista,
+    this.lista
   });
 
   Map<String, Object?> toMap() {
@@ -25,7 +29,7 @@ class Item {
       'quantidade': quantidade,
       'promocional': promocional,
       'qt_promocao': qtPromocao,
-      'id_lista': idLista
+      'id_lista': lista?.id ?? idLista
     };
     return map;
   }
@@ -39,6 +43,7 @@ class Item {
       promocional: map['promocional'] as double?,
       qtPromocao: map['qt_pPromocao'] as int?,
       idLista: map['id_lista'] as int,
+      lista: Lista(id: map['id_lista'] as int)
     );
   }
 }

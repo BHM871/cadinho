@@ -1,11 +1,14 @@
+import 'package:cadinho/domain/item.dart';
+
 class Lista {
   final int? id;
   final String? titulo;
   final String? mercado;
   final DateTime? data;
   final ListaStatus? status;
+  List<Item>? itens;
 
-  Lista({this.id, this.titulo, this.mercado, this.data, this.status});
+  Lista({this.id, this.titulo, this.mercado, this.data, this.status, this.itens});
 
   Map<String, Object?> toMap() {
     var map = <String, Object?> {
