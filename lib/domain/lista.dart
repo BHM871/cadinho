@@ -6,9 +6,10 @@ class Lista {
   final String? mercado;
   final DateTime? data;
   final ListaStatus? status;
-  List<Item>? itens;
+  List<Item> itens;
+  double total;
 
-  Lista({this.id, this.titulo, this.mercado, this.data, this.status, this.itens});
+  Lista({this.id, this.titulo, this.mercado, this.data, this.status, this.total = 0, List<Item>? itensIni}) : itens = itensIni ?? [];
 
   Map<String, Object?> toMap() {
     var map = <String, Object?> {
@@ -17,6 +18,7 @@ class Lista {
       'mercado': mercado,
       'data': data,
       'status': status?.value,
+      'total': total,
     };
     return map;
   }
@@ -27,7 +29,8 @@ class Lista {
       titulo: map['titulo'] as String?,
       mercado: map['mercado'] as String?,
       data: map['data'] != null ? DateTime.parse(map['data'] as String) : null,
-      status: map['status'] != null ? ListaStatus.by(map['status'] as String) : null
+      status: map['status'] != null ? ListaStatus.by(map['status'] as String) : null,
+      total: map['total'] as double
     );
   }
 }

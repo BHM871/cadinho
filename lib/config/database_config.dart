@@ -54,16 +54,18 @@ class DatabaseConfig {
       mercado   TEXT        CHECK(LENGTH(mercado) <= 100)                           NOT NULL DEFAULT 'Não informado',
       data      TEXT                                                                NOT NULL DEFAULT current_timestamp,
       status    TEXT        CHECK(status IN('PENDENTE', 'EM CURSO', 'FINALIZADO'))  NOT NULL DEFAULT 'PENDENTE'
+      total     REAL        CHECK(total >= 0)                                       NOT NULL DEFAULT 0
     )""");
    
     await db.execute("""CREATE TABLE Item (
       id            INTEGER PRIMARY KEY,
-      titulo        TEXT    CHECK(LENGTH(titulo) <= 100)                NOT NULL,
-      valor         REAL    CHECK(valor > 0 AND valor <= 500)           NOT NULL DEFAULT 1,
-      quantidade    INTEGER CHECK(quantidade > 0)                       NOT NULL DEFAULT 1,
+      titulo        TEXT    CHECK(LENGTH(titulo) <= 100)                    NOT NULL,
+      valor         REAL    CHECK(valor > 0 AND valor <= 500)               NOT NULL DEFAULT 1,
+      quantidade    REAL    CHECK(quantidade > 0)                           NOT NULL DEFAULT 1,
+      unidade       TEXT    CHECK(unidade IN('kg', 'lt', 'un'))             NOT NULL DEAFULT 'kg'
       promocional   REAL    CHECK(promocional > 0 AND promocional <= valor),
       qt_promocao   INTEGER CHECK(qt_promocao > 1),
-      id_lista      INTEGER CHECK(id_lista > 0)                         NOT NULL,
+      id_lista      INTEGER CHECK(id_lista > 0)                             NOT NULL,
       FOREIGN KEY(id_lista) REFERENCES Lista(id) ON DELETE CASCADE
     )""");
   }
