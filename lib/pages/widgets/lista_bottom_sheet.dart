@@ -45,22 +45,40 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
+    return AnimatedPadding(
+      padding: EdgeInsets.only(
+        top: 16,
+        right: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        left: 16,
+      ),
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.decelerate,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _nomeController,
             decoration: const InputDecoration(labelText: 'Nome da Lista'),
+            textInputAction: TextInputAction.next,
+            onEditingComplete: () {
+              FocusScope.of(context).nextFocus();
+            },
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: _merdacoController,
             decoration: const InputDecoration(labelText: 'Supermercado'),
+            textInputAction: TextInputAction.next,
+            onEditingComplete: () {
+              FocusScope.of(context).nextFocus();
+            },
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: _dataController,
             decoration: InputDecoration(labelText: 'Data'),
+            textInputAction: TextInputAction.done,
             onTap: () async {
               DateTime? date = await _selectDate(context);
               _dateTime = date; 
@@ -72,6 +90,7 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
               }
             },
           ),
+          const SizedBox(height: 10),
           DropdownButton<String>(
             value: _status,
             onChanged: (value) {
@@ -102,6 +121,7 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
               Navigator.of(context).pop();
             },
           ),
+          const SizedBox(height: 23),
         ],
       ),
     );

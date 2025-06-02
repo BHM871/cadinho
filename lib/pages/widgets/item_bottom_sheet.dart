@@ -31,8 +31,15 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16),
+    return AnimatedPadding(
+      padding: EdgeInsets.only(
+        top: 16,
+        right: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        left: 16,
+      ),
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.decelerate,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -40,7 +47,12 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
             TextField(
               controller: _nomeController,
               decoration: const InputDecoration(labelText: 'Nome do Produto'),
+              textInputAction: TextInputAction.next,
+              onEditingComplete: () {
+                FocusScope.of(context).nextFocus();
+              },
             ),
+            const SizedBox(height: 10),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -49,8 +61,13 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                     controller: _quantidadeController,
                     decoration: const InputDecoration(labelText: 'Quantidade'),
                     keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () {
+                      FocusScope.of(context).nextFocus();
+                    },
                   ),
                 ),
+                const SizedBox(width: 10),
                 DropdownButton<String>(
                   value: _unidade,
                   onChanged: (value) {
@@ -65,12 +82,14 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: _valorController,
               decoration: const InputDecoration(labelText: 'Preço'),
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              textInputAction: TextInputAction.done,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
               child: const Text('Finalizar'),
@@ -99,7 +118,8 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
 
                 Navigator.of(context).pop();
               },
-            )
+            ),
+            const SizedBox(height: 23),
           ],
         ),
       ),

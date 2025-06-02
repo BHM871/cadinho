@@ -34,6 +34,7 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
   void _adicionarProduto() async {
     await showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) => ItemBottomSheet(
         lista: lista,
         onChange: (item) async {
@@ -57,6 +58,7 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
   void _editarProduto(int index) async {
     await showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) => ItemBottomSheet(
         lista: lista,
         item: lista.itens[index],

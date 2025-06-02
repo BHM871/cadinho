@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   void _adicionarLista() async {
     await showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (builder) => ListaBottomSheet(
         onChange: (lista) async {
           var temp = await viewModel.salvar(lista);
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage> {
   void _editarLista(int index) async {
     await showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (builder) => ListaBottomSheet(
         lista: listas[index],
         onChange: (lista) async {
