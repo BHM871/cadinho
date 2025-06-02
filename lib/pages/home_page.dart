@@ -15,11 +15,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Lista> listas = [];
 
+  @override
+  void initState() {
+    super.initState();
+    setState(() {});
+  }
+
   void _abrirDetalhes(Lista lista) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ListaDetalhePage(lista: lista),
+        builder: (context) => ListaDetalhePage(
+          lista: lista,
+          onFinish: _finalizarCompra,
+        ),
       ),
     );
     setState(() {}); // Atualiza total ao voltar
@@ -30,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (builder) => ListaBottomSheet(
         onChange: (lista) {
-          lista = Lista(id: listas.length + 1, titulo: lista.titulo, mercado: lista.mercado, data: lista.data, status: lista.status);
+          lista = Lista(id: listas.length + 1, titulo: lista.titulo, mercado: lista.mercado, data: lista.data, status: lista.status, itens: lista.itens, total: lista.total);
           listas.add(lista);
           setState(() {});
         })
@@ -43,6 +52,7 @@ class _HomePageState extends State<HomePage> {
       builder: (builder) => ListaBottomSheet(
         lista: listas[index],
         onChange: (lista) {
+          lista = Lista(id: lista.id, titulo: lista.titulo, mercado: lista.mercado, data: lista.data, status: lista.status, itens: lista.itens, total: lista.total);
           listas[index] = lista;
           setState(() {});
         })
@@ -50,9 +60,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _excluirLista(int index) {
-    setState(() {
-      listas.removeAt(index);
-    });
+    listas.removeAt(index);
+    setState(() {});
+  }
+
+  void _finalizarCompra(Lista lista) {
+    for(int i = 0; i < listas.length; i++) {
+      if (lista.id! == listas[i].id!) {
+        listas[i] = lista;
+        setState(() {});
+        break;
+      }
+    }
   }
 
   void _abrirComparacao() {

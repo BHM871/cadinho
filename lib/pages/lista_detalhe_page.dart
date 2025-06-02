@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 
 class ListaDetalhePage extends StatefulWidget {
   final Lista lista;
-  const ListaDetalhePage({required this.lista, super.key});
+  final Function(Lista) onFinish;
+
+  const ListaDetalhePage({required this.lista, required this.onFinish, super.key});
 
   @override
   State<ListaDetalhePage> createState() => _ListaDetalhePageState();
@@ -29,6 +31,7 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
         onChange: (item) {
           item = Item(id: lista.itens.length + 1, titulo: item.titulo, valor: item.valor, quantidade: item.quantidade, unidade: item.unidade, idLista: item.idLista);
           lista.itens.add(item);
+          lista.total += item.valor * item.quantidade;
           setState(() {});
         }
       ),
@@ -50,9 +53,14 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
   }
 
   void _excluirProduto(int index) {
-    setState(() {
-      lista.itens.removeAt(index);
-    });
+    lista.itens.removeAt(index);
+    setState(() {});
+  }
+
+  void _finalizarCompra() {
+    lista = Lista(id: lista.id, titulo: lista.titulo, mercado: lista.mercado, data: lista.data, status: ListaStatus.finalizado, itens: lista.itens, total: lista.total);
+    setState(() {});
+    widget.onFinish(lista);
   }
 
   @override
@@ -77,17 +85,32 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         color: Colors.grey[200],
-        child: Text(
-          'Total: R\$ ${lista.total.toStringAsFixed(2)}',
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Total: R\$ ${lista.total.toStringAsFixed(2)}',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            lista.status! == ListaStatus.finalizado
+                ? SizedBox.shrink()
+                : ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                  onPressed: () => _finalizarCompra(),
+                  child: const Text('Finalizar'),
+                ),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
-        onPressed: _adicionarProduto,
-        tooltip: 'Adicionar Item',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: lista.status! == ListaStatus.finalizado
+          ? SizedBox.shrink()
+          : FloatingActionButton(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            onPressed: _adicionarProduto,
+            tooltip: 'Adicionar Item',
+            child: const Icon(Icons.add),
+          ),
     );
   }
 }

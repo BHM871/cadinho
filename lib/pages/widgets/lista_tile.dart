@@ -1,5 +1,6 @@
 import 'package:cadinho/domain/lista.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ListaTile extends StatelessWidget {
   final Lista lista;
@@ -15,11 +16,45 @@ class ListaTile extends StatelessWidget {
     required this.onClick,
   });
 
+  TextStyle? getStyle() {
+    if (lista.status == null) {
+      return null;
+    }
+
+    if (lista.status! == ListaStatus.pendente) {
+      return TextStyle(color: Colors.red);
+    }
+
+    if (lista.status! == ListaStatus.emCurso) {
+      return TextStyle(color: Colors.yellow);
+    }
+
+    if (lista.status! == ListaStatus.finalizado) {
+      return TextStyle(color: Colors.green);
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${lista.titulo} | ${lista.mercado}'),
-      subtitle: Text('Total: R\$ ${lista.total.toStringAsFixed(2)}'),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(DateFormat('dd/MM/yyyy').format(lista.data!)),
+          Row(
+            children: [
+              Text('Total: R\$ '),
+              Text(
+                lista.total.toStringAsFixed(2),
+                style: getStyle(),
+              )
+            ],
+          ),
+        ],
+      ),
       onTap: onClick,
       trailing: PopupMenuButton<String>(
         onSelected: (valor) {

@@ -94,6 +94,8 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
                 mercado: _merdacoController.text.trim(),
                 data: _dateTime,
                 status: ListaStatus.by(_status),
+                itens: widget.lista?.itens,
+                total: widget.lista?.total ?? 0
               ));
 
               Navigator.of(context).pop();

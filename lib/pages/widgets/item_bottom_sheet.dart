@@ -87,6 +87,8 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                   quantidade: quantidade,
                   unidade: ItemUnidade.by(_unidade),
                   valor: preco,
+                  promocional: widget.item?.promocional,
+                  qtPromocao: widget.item?.qtPromocao,
                   idLista: widget.idLista,
                 ));
 

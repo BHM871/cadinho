@@ -9,7 +9,7 @@ class Lista {
   List<Item> itens;
   double total;
 
-  Lista({this.id, this.titulo, this.mercado, this.data, this.status, this.total = 0, List<Item>? itensIni}) : itens = itensIni ?? [];
+  Lista({this.id, this.titulo, this.mercado, this.data, this.status, this.total = 0, List<Item>? itens}) : itens = itens ?? [];
 
   Map<String, Object?> toMap() {
     var map = <String, Object?> {
