@@ -139,19 +139,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: Row(
-          children: const [
-            Icon(Icons.shopping_cart, color: Colors.white),
-            SizedBox(width: 8),
-            Text(
-              'CADINHO',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ],
+        title: SizedBox(
+          width: 10 * 16,
+          child: Image.asset('assets/icons/banner.png'),
         ),
         actions: [
           IconButton(
