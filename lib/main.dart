@@ -1,4 +1,5 @@
 import 'package:cadinho/config/database_config.dart';
+import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
 
@@ -17,7 +18,9 @@ class MyApp extends StatelessWidget {
       title: 'Cadinho',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.red),
-      home: const HomePage(),
+      home: const HomePage(
+        viewModel: ListaViewModel(),
+      ),
     );
   }
 }

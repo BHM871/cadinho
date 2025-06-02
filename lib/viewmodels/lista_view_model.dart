@@ -4,6 +4,8 @@ import 'package:sqflite/sqflite.dart';
 
 class ListaViewModel {
 
+  const ListaViewModel();
+
   Future<Lista?> buscarId(int id) async {
     Database bd = await DatabaseConfig.get();
 

@@ -33,7 +33,7 @@ class Lista {
     }
 
     if (data != null) {
-      map['data'] = data;
+      map['data'] = data!.toIso8601String();
     }
 
     map['status'] = status.value;

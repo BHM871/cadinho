@@ -1,24 +1,31 @@
 import 'package:cadinho/domain/lista.dart';
 import 'package:cadinho/pages/widgets/lista_bottom_sheet.dart';
 import 'package:cadinho/pages/widgets/lista_tile.dart';
+import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'lista_detalhe_page.dart';
 import 'comparacao_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final ListaViewModel viewModel;
+  const HomePage({super.key, required this.viewModel});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late ListaViewModel viewModel;
   List<Lista> listas = [];
 
   @override
   void initState() {
     super.initState();
-    setState(() {});
+    viewModel = widget.viewModel;
+    viewModel.buscarTodas().then((listas) {
+      this.listas = listas ?? [];
+      setState(() {});
+    });
   }
 
   void _abrirDetalhes(Lista lista) async {
@@ -31,20 +38,26 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-    setState(() {}); // Atualiza total ao voltar
+    setState(() {});
   }
 
   void _adicionarLista() async {
     await showModalBottomSheet(
       context: context,
       builder: (builder) => ListaBottomSheet(
-        onChange: (lista) {
-          var map = lista.toMap();
-          map['id'] = listas.length + 1;
-          lista = Lista.fromMap(map);
-          listas.add(lista);
+        onChange: (lista) async {
+          var temp = await viewModel.salvar(lista);
+
+          if (temp == null) {
+            _showErroModal('Erro ao salvar lista');
+            return;
+          }
+          
+          listas.add(temp);
+          
           setState(() {});
-        })
+        }
+      )
     );
   }
 
@@ -53,26 +66,63 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (builder) => ListaBottomSheet(
         lista: listas[index],
-        onChange: (lista) {
-          listas[index] = lista;
+        onChange: (lista) async {
+          var temp = await viewModel.atualizar(lista);
+
+          if (temp == null) {
+            _showErroModal('Erro ao salvar lista');
+            return;
+          }
+          
+          listas[index] = temp;
+          
           setState(() {});
-        })
+        }
+      )
     );
   }
 
   void _excluirLista(int index) {
+    viewModel.excluir(listas[index]);
     listas.removeAt(index);
     setState(() {});
   }
 
-  void _finalizarCompra(Lista lista) {
-    for(int i = 0; i < listas.length; i++) {
-      if (lista.id! == listas[i].id!) {
-        listas[i] = lista;
+  void _finalizarCompra(Lista lista) async {
+    var map = lista.toMap();
+    map['status'] = ListaStatus.finalizado.value;
+    var temp = await viewModel.atualizar(Lista.fromMap(map));
+
+    if (temp == null) {
+      _showErroModal('Erro ao finalizar lista');
+      return;
+    }
+
+    for (int i = 0; i < listas.length; i++) {
+      if (listas[i].id == temp.id) {
+        listas[i] = temp;
         setState(() {});
         break;
       }
     }
+  }
+
+  void _showErroModal(String mensagem) {
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (buider) => AlertDialog(
+        title: const Text('Erro'),
+        content: Text(mensagem),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _abrirComparacao() {
@@ -115,10 +165,6 @@ class _HomePageState extends State<HomePage> {
         itemCount: listas.length,
         itemBuilder: (context, index) {
           final lista = listas[index];
-          lista.total = lista.itens.fold<double>(
-            0,
-            (soma, p) => soma + ((p.valor ?? 1) * p.quantidade),
-          );
 
           return ListaTile(
             lista: lista,

@@ -10,7 +10,7 @@ class DatabaseConfig {
   static String _path = "";
   static final String _dbname = "cadinho.db";
 
-  static void setup() async {
+  static Future<void> setup() async {
   if (_isSetupped) return;
 
     String dbPath = await getDatabasesPath();
@@ -26,10 +26,10 @@ class DatabaseConfig {
   static Future<Database> get() async {
     if (_db != null) return _db!;
   
-    setup();
+    await setup();
 
     _db = await openDatabase(
-      _path, 
+      _path,
       version: 1, 
       singleInstance: true,
       onConfigure: _onConfigure,
@@ -53,7 +53,7 @@ class DatabaseConfig {
       titulo    TEXT        CHECK(LENGTH(titulo) <= 100)                            NOT NULL UNIQUE,
       mercado   TEXT        CHECK(LENGTH(mercado) <= 100)                           NOT NULL DEFAULT 'Não informado',
       data      TEXT                                                                NOT NULL DEFAULT current_timestamp,
-      status    TEXT        CHECK(status IN('PENDENTE', 'EM CURSO', 'FINALIZADO'))  NOT NULL DEFAULT 'PENDENTE'
+      status    TEXT        CHECK(status IN('PENDENTE', 'EM CURSO', 'FINALIZADO'))  NOT NULL DEFAULT 'PENDENTE',
       total     REAL        CHECK(total >= 0)                                       NOT NULL DEFAULT 0
     )""");
    
@@ -62,7 +62,7 @@ class DatabaseConfig {
       titulo        TEXT    CHECK(LENGTH(titulo) <= 100)                    NOT NULL,
       valor         REAL    CHECK(valor > 0 AND valor <= 500)               DEFAULT 1,
       quantidade    REAL    CHECK(quantidade > 0)                           NOT NULL DEFAULT 1,
-      unidade       TEXT    CHECK(unidade IN('kg', 'lt', 'un'))             NOT NULL DEAFULT 'kg'
+      unidade       TEXT    CHECK(unidade IN('kg', 'lt', 'un'))             NOT NULL DEFAULT 'kg',
       promocional   REAL    CHECK(promocional > 0 AND promocional <= valor),
       qt_promocao   INTEGER CHECK(qt_promocao > 1),
       id_lista      INTEGER CHECK(id_lista > 0)                             NOT NULL,
