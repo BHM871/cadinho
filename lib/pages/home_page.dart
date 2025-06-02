@@ -176,6 +176,8 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _adicionarLista,
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
         tooltip: 'Adicionar Lista',
         child: const Icon(Icons.add)
       ),
