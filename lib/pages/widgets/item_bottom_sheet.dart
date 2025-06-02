@@ -1,12 +1,13 @@
 import 'package:cadinho/domain/item.dart';
+import 'package:cadinho/domain/lista.dart';
 import 'package:flutter/material.dart';
 
 class ItemBottomSheet extends StatefulWidget {
   final Function(Item) onChange;
-  final int idLista; 
+  final Lista lista; 
   final Item? item;
 
-  const ItemBottomSheet({super.key, required this.onChange, required this.idLista, this.item});
+  const ItemBottomSheet({super.key, required this.onChange, required this.lista, this.item});
 
   @override
   State<ItemBottomSheet> createState() => _ItemBottomSheetState();
@@ -74,13 +75,18 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
               child: const Text('Finalizar'),
               onPressed: () {
-                if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty || _valorController.text.trim().isEmpty) {
+                if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty) {
+                  return;
+                }
+
+                if (widget.lista.status! == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
                   return;
                 }
 
                 final quantidade = double.tryParse(_quantidadeController.text);
                 final preco = double.tryParse(_valorController.text);
-                if (quantidade == null || preco == null) return;
+                if (quantidade == null) return;
+                if (widget.lista.status! == ListaStatus.emCurso && preco == null) return;
 
                 widget.onChange(Item(
                   titulo: _nomeController.text,
@@ -89,7 +95,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                   valor: preco,
                   promocional: widget.item?.promocional,
                   qtPromocao: widget.item?.qtPromocao,
-                  idLista: widget.idLista,
+                  idLista: widget.lista.id!,
                 ));
 
                 Navigator.of(context).pop();

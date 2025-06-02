@@ -39,7 +39,9 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (builder) => ListaBottomSheet(
         onChange: (lista) {
-          lista = Lista(id: listas.length + 1, titulo: lista.titulo, mercado: lista.mercado, data: lista.data, status: lista.status, itens: lista.itens, total: lista.total);
+          var map = lista.toMap();
+          map['id'] = listas.length + 1;
+          lista = Lista.fromMap(map);
           listas.add(lista);
           setState(() {});
         })
@@ -52,7 +54,6 @@ class _HomePageState extends State<HomePage> {
       builder: (builder) => ListaBottomSheet(
         lista: listas[index],
         onChange: (lista) {
-          lista = Lista(id: lista.id, titulo: lista.titulo, mercado: lista.mercado, data: lista.data, status: lista.status, itens: lista.itens, total: lista.total);
           listas[index] = lista;
           setState(() {});
         })
@@ -116,7 +117,7 @@ class _HomePageState extends State<HomePage> {
           final lista = listas[index];
           lista.total = lista.itens.fold<double>(
             0,
-            (soma, p) => soma + (p.valor * p.quantidade),
+            (soma, p) => soma + ((p.valor ?? 1) * p.quantidade),
           );
 
           return ListaTile(

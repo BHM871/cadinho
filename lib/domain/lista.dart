@@ -12,7 +12,7 @@ class Lista {
   Lista({this.id, this.titulo, this.mercado, this.data, this.status, this.total = 0, List<Item>? itens}) : itens = itens ?? [];
 
   Map<String, Object?> toMap() {
-    var map = <String, Object?> {
+    var map = <String, Object?>{
       'id': id,
       'titulo': titulo,
       'mercado': mercado,
@@ -20,6 +20,7 @@ class Lista {
       'status': status?.value,
       'total': total,
     };
+
     return map;
   }
 

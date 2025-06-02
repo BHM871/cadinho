@@ -3,7 +3,7 @@ import 'package:cadinho/domain/lista.dart';
 class Item {
   final int? id;
   final String titulo;
-  final double valor;
+  final double? valor;
   final double quantidade;
   final ItemUnidade unidade;
   final double? promocional;

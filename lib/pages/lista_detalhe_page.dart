@@ -27,11 +27,13 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
     await showModalBottomSheet(
       context: context,
       builder: (_) => ItemBottomSheet(
-        idLista: lista.id!,
+        lista: lista,
         onChange: (item) {
-          item = Item(id: lista.itens.length + 1, titulo: item.titulo, valor: item.valor, quantidade: item.quantidade, unidade: item.unidade, idLista: item.idLista);
+          var map = item.toMap();
+          map['id'] = lista.itens.length + 1;
+          item = Item.fromMap(map);
           lista.itens.add(item);
-          lista.total += item.valor * item.quantidade;
+          lista.total += (item.valor ?? 1) * item.quantidade;
           setState(() {});
         }
       ),
@@ -42,7 +44,7 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
     await showModalBottomSheet(
       context: context,
       builder: (_) => ItemBottomSheet(
-        idLista: lista.id!,
+        lista: lista,
         item: lista.itens[index],
         onChange: (item) {
           lista.itens[index] = item;
@@ -58,7 +60,9 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
   }
 
   void _finalizarCompra() {
-    lista = Lista(id: lista.id, titulo: lista.titulo, mercado: lista.mercado, data: lista.data, status: ListaStatus.finalizado, itens: lista.itens, total: lista.total);
+    var map = lista.toMap();
+    map['status'] = ListaStatus.finalizado.value;
+    lista = Lista.fromMap(map);
     setState(() {});
     widget.onFinish(lista);
   }

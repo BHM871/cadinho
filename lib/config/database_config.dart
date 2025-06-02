@@ -60,7 +60,7 @@ class DatabaseConfig {
     await db.execute("""CREATE TABLE Item (
       id            INTEGER PRIMARY KEY,
       titulo        TEXT    CHECK(LENGTH(titulo) <= 100)                    NOT NULL,
-      valor         REAL    CHECK(valor > 0 AND valor <= 500)               NOT NULL DEFAULT 1,
+      valor         REAL    CHECK(valor > 0 AND valor <= 500)               DEFAULT 1,
       quantidade    REAL    CHECK(quantidade > 0)                           NOT NULL DEFAULT 1,
       unidade       TEXT    CHECK(unidade IN('kg', 'lt', 'un'))             NOT NULL DEAFULT 'kg'
       promocional   REAL    CHECK(promocional > 0 AND promocional <= valor),

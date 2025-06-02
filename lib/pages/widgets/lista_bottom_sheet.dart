@@ -16,7 +16,7 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
   final _nomeController = TextEditingController();
   final _merdacoController = TextEditingController();
   final _dataController = TextEditingController();
-  DateTime _dateTime = DateTime.now();
+  DateTime? _dateTime = DateTime.now();
   String _status = "";
 
   @override
@@ -26,7 +26,9 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
     _nomeController.text = widget.lista?.titulo ?? '';
     _merdacoController.text = widget.lista?.mercado ?? '';
     _dateTime = widget.lista?.data ?? DateTime.now();
-    _dataController.text = DateFormat('dd/MM/yyyy').format(_dateTime);
+    if (_dateTime != null) {
+      _dataController.text = DateFormat('dd/MM/yyyy').format(_dateTime!);
+    }
     _status = widget.lista?.status?.value ?? ListaStatus.pendente.value;
   }
 
@@ -38,10 +40,7 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
       lastDate: DateTime(2100),
     );
     
-    if (picked != null) {
-      return picked;
-    }
-    return null;
+    return picked;
   }
 
   @override
@@ -64,9 +63,12 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
             decoration: InputDecoration(labelText: 'Data'),
             onTap: () async {
               DateTime? date = await _selectDate(context);
+              _dateTime = date; 
+
               if (date != null) {
                 _dataController.text = DateFormat('dd/MM/yyyy').format(date);
-                _dateTime = date; 
+              } else {
+                _dataController.text = '';
               }
             },
           ),
