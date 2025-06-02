@@ -34,33 +34,40 @@ class ListaTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text('${lista.titulo} | ${lista.mercado}'),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(lista.data != null ? DateFormat('dd/MM/yyyy').format(lista.data!) : ''),
-          Row(
-            children: [
-              Text('Total: R\$ '),
-              Text(
-                lista.total.toStringAsFixed(2),
-                style: getStyle(),
-              )
-            ],
-          ),
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Color.from(alpha: .4,blue: .9,red: .9,green: .9),
+        borderRadius: BorderRadius.circular(10),
       ),
-      onTap: onClick,
-      trailing: PopupMenuButton<String>(
-        onSelected: (valor) {
-          if (valor == 'Editar') onEdit();
-          if (valor == 'Excluir') onDelete();
-        },
-        itemBuilder: (_) => [
-          const PopupMenuItem(value: 'Editar', child: Text('Editar')),
-          const PopupMenuItem(value: 'Excluir', child: Text('Excluir')),
-        ],
+      margin: EdgeInsets.only(top: 8, right: 10, bottom: 0, left: 10),
+      child: ListTile(
+        title: Text('${lista.titulo} | ${lista.mercado}'),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(lista.data != null ? DateFormat('dd/MM/yyyy').format(lista.data!) : ''),
+            Row(
+              children: [
+                Text('Total: R\$ '),
+                Text(
+                  lista.total.toStringAsFixed(2),
+                  style: getStyle(),
+                )
+              ],
+            ),
+          ],
+        ),
+        onTap: onClick,
+        trailing: PopupMenuButton<String>(
+          onSelected: (valor) {
+            if (valor == 'Editar') onEdit();
+            if (valor == 'Excluir') onDelete();
+          },
+          itemBuilder: (_) => [
+            const PopupMenuItem(value: 'Editar', child: Text('Editar')),
+            const PopupMenuItem(value: 'Excluir', child: Text('Excluir')),
+          ],
+        ),
       ),
     );
   }
