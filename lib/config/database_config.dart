@@ -52,7 +52,7 @@ class DatabaseConfig {
       id        INTEGER     PRIMARY KEY, 
       titulo    TEXT        CHECK(LENGTH(titulo) <= 100)                            NOT NULL UNIQUE,
       mercado   TEXT        CHECK(LENGTH(mercado) <= 100)                           NOT NULL DEFAULT 'Não informado',
-      data      TEXT                                                                NOT NULL DEFAULT current_timestamp,
+      data      TEXT,
       status    TEXT        CHECK(status IN('PENDENTE', 'EM CURSO', 'FINALIZADO'))  NOT NULL DEFAULT 'PENDENTE',
       total     REAL        CHECK(total >= 0)                                       NOT NULL DEFAULT 0
     )""");
