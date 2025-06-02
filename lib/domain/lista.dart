@@ -2,24 +2,42 @@ import 'package:cadinho/domain/item.dart';
 
 class Lista {
   final int? id;
-  final String? titulo;
+  final String titulo;
   final String? mercado;
   final DateTime? data;
-  final ListaStatus? status;
+  final ListaStatus status;
   List<Item> itens;
   double total;
 
-  Lista({this.id, this.titulo, this.mercado, this.data, this.status, this.total = 0, List<Item>? itens}) : itens = itens ?? [];
+  Lista({
+    this.id, 
+    required this.titulo, 
+    this.mercado, 
+    this.data, 
+    required this.status, 
+    this.total = 0, 
+    List<Item>? itens
+  }) : itens = itens ?? [];
 
   Map<String, Object?> toMap() {
-    var map = <String, Object?>{
-      'id': id,
-      'titulo': titulo,
-      'mercado': mercado,
-      'data': data,
-      'status': status?.value,
-      'total': total,
-    };
+    var map = <String, Object?>{};
+
+    if (data != null) {
+      map['id'] = id;
+    }
+
+    map['titulo'] = titulo;
+
+    if (mercado != null) {
+      map['mercado'] = mercado;
+    }
+
+    if (data != null) {
+      map['data'] = data;
+    }
+
+    map['status'] = status.value;
+    map['total'] = total;
 
     return map;
   }
@@ -27,10 +45,10 @@ class Lista {
   static Lista fromMap(Map<String, Object?> map) {
     return Lista(
       id: map['id'] as int?,
-      titulo: map['titulo'] as String?,
+      titulo: map['titulo'] as String,
       mercado: map['mercado'] as String?,
       data: map['data'] != null ? DateTime.parse(map['data'] as String) : null,
-      status: map['status'] != null ? ListaStatus.by(map['status'] as String) : null,
+      status: ListaStatus.by(map['status'] as String),
       total: map['total'] as double
     );
   }

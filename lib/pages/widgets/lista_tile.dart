@@ -17,19 +17,15 @@ class ListaTile extends StatelessWidget {
   });
 
   TextStyle? getStyle() {
-    if (lista.status == null) {
-      return null;
-    }
-
-    if (lista.status! == ListaStatus.pendente) {
+    if (lista.status == ListaStatus.pendente) {
       return TextStyle(color: Colors.red);
     }
 
-    if (lista.status! == ListaStatus.emCurso) {
+    if (lista.status == ListaStatus.emCurso) {
       return TextStyle(color: Colors.yellow);
     }
 
-    if (lista.status! == ListaStatus.finalizado) {
+    if (lista.status == ListaStatus.finalizado) {
       return TextStyle(color: Colors.green);
     }
 
@@ -43,7 +39,7 @@ class ListaTile extends StatelessWidget {
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(DateFormat('dd/MM/yyyy').format(lista.data!)),
+          Text(lista.data != null ? DateFormat('dd/MM/yyyy').format(lista.data!) : ''),
           Row(
             children: [
               Text('Total: R\$ '),
