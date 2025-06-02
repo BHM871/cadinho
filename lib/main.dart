@@ -17,7 +17,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cadinho',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.red),
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        fontFamily: 'Montserrat',
+      ),
       home: const HomePage(
         viewModel: ListaViewModel(),
       ),
