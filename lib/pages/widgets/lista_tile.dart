@@ -39,7 +39,8 @@ class ListaTile extends StatelessWidget {
         color: Color.from(alpha: .4,blue: .9,red: .9,green: .9),
         borderRadius: BorderRadius.circular(10),
       ),
-      margin: EdgeInsets.only(top: 8, right: 10, bottom: 0, left: 10),
+      margin: EdgeInsets.only(top: 8, right: 8, bottom: 0, left: 8),
+      padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 5),
       child: ListTile(
         title: Text('${lista.titulo} | ${lista.mercado}'),
         subtitle: Row(
