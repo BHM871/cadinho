@@ -1,26 +1,34 @@
-import 'package:cadinho/domain/item.dart';
 import 'package:cadinho/domain/lista.dart';
 import 'package:cadinho/pages/widgets/item_bottom_sheet.dart';
 import 'package:cadinho/pages/widgets/item_tile.dart';
+import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:flutter/material.dart';
 
 class ListaDetalhePage extends StatefulWidget {
   final Lista lista;
-  final Function(Lista) onFinish;
+  final ItemViewModel viewModel;
+  final Function(Lista) onChange;
 
-  const ListaDetalhePage({required this.lista, required this.onFinish, super.key});
+  const ListaDetalhePage({required this.lista, required this.viewModel, required this.onChange, super.key});
 
   @override
   State<ListaDetalhePage> createState() => _ListaDetalhePageState();
 }
 
 class _ListaDetalhePageState extends State<ListaDetalhePage> {
+  late ItemViewModel viewModel;
   late Lista lista;
 
   @override
   void initState() {
     super.initState();
+    viewModel = widget.viewModel;
     lista = widget.lista;
+
+    viewModel.buscarTodos(lista.id!).then((itens) {
+      lista.itens = itens ?? [];
+      setState(() {});
+    });
   }
 
   void _adicionarProduto() async {
@@ -28,13 +36,19 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
       context: context,
       builder: (_) => ItemBottomSheet(
         lista: lista,
-        onChange: (item) {
-          var map = item.toMap();
-          map['id'] = lista.itens.length + 1;
-          item = Item.fromMap(map);
-          lista.itens.add(item);
-          lista.total += (item.valor ?? 1) * item.quantidade;
+        onChange: (item) async {
+          var temp = await viewModel.salvar(item);
+
+          if (temp == null) {
+            _showErroModal('Erro ao salvar produto');
+            return;
+          }
+
+          lista.itens.add(temp);
+          lista.total += (temp.valor ?? 1) * temp.quantidade;
           setState(() {});
+
+          widget.onChange(lista);
         }
       ),
     );
@@ -46,25 +60,59 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
       builder: (_) => ItemBottomSheet(
         lista: lista,
         item: lista.itens[index],
-        onChange: (item) {
-          lista.itens[index] = item;
+        onChange: (item) async {
+          var temp = await viewModel.atualizar(item);
+
+          if (temp == null) {
+            _showErroModal('Erro ao salvar produto');
+            return;
+          }
+
+          lista.total -= (lista.itens[index].valor ?? 1) * lista.itens[index].quantidade;
+          lista.total += (temp.valor ?? 1) * temp.quantidade;
+          lista.itens[index] = temp;
           setState(() {});
+
+          widget.onChange(lista);
         }
       ),
     );
   }
 
-  void _excluirProduto(int index) {
+  void _excluirProduto(int index) async {
+    viewModel.excluir(lista.itens[index]);
+    lista.total -= (lista.itens[index].valor ?? 1) * lista.itens[index].quantidade;
     lista.itens.removeAt(index);
     setState(() {});
   }
 
-  void _finalizarCompra() {
+  void _finalizarCompra() async {
     var map = lista.toMap();
     map['status'] = ListaStatus.finalizado.value;
+
     lista = Lista.fromMap(map);
+    lista.itens = await viewModel.buscarTodos(lista.id!) ?? [];
     setState(() {});
-    widget.onFinish(lista);
+
+    widget.onChange(lista);
+  }
+
+  void _showErroModal(String mensagem) {
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (buider) => AlertDialog(
+        title: const Text('Erro'),
+        content: Text(mensagem),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -96,7 +144,7 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
               'Total: R\$ ${lista.total.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            lista.status! == ListaStatus.finalizado
+            lista.status == ListaStatus.finalizado
                 ? SizedBox.shrink()
                 : ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
@@ -106,7 +154,7 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
           ],
         ),
       ),
-      floatingActionButton: lista.status! == ListaStatus.finalizado
+      floatingActionButton: lista.status == ListaStatus.finalizado
           ? SizedBox.shrink()
           : FloatingActionButton(
             backgroundColor: Colors.red,

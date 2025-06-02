@@ -17,7 +17,7 @@ class ItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(produto.titulo),
-      subtitle: Text('${produto.quantidade} ${produto.unidade.name} - R\$ ${produto.valor.toStringAsFixed(2)}'),
+      subtitle: Text('${produto.quantidade} ${produto.unidade.name} - R\$ ${produto.valor?.toStringAsFixed(2)}'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

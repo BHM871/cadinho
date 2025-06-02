@@ -24,16 +24,31 @@ class Item {
   });
 
   Map<String, Object?> toMap() {
-    var map = <String, Object?> {
-      'id': id,
-      'titulo': titulo,
-      'valor': valor,
-      'quantidade': quantidade,
-      'unidade': unidade,
-      'promocional': promocional,
-      'qt_promocao': qtPromocao,
-      'id_lista': lista?.id ?? idLista
-    };
+    var map = <String, Object?> {};
+
+    if (id != null) {
+      map['id'] = id;
+    }
+
+    map['titulo'] = titulo;
+
+    if (valor != null) {
+      map['valor'] = valor;
+    }
+
+    map['quantidade'] = quantidade;
+    map['unidade'] = unidade.name;
+
+    if (promocional != null) {
+      map['promocional'] = promocional;
+    }
+
+    if (qtPromocao != null) {
+      map['qt_promocao'] = qtPromocao;
+    }
+
+    map['id_lista'] = lista?.id ?? idLista;
+
     return map;
   }
 
@@ -43,11 +58,10 @@ class Item {
       titulo: map['titulo'] as String,
       valor: map['valor'] as double,
       quantidade: map['quantidade'] as double,
-      unidade: ItemUnidade.by(['unidade'] as String),
+      unidade: ItemUnidade.by(map['unidade'] as String),
       promocional: map['promocional'] as double?,
-      qtPromocao: map['qt_pPromocao'] as int?,
-      idLista: map['id_lista'] as int,
-      lista: Lista(id: map['id_lista'] as int)
+      qtPromocao: map['qt_promocao'] as int?,
+      idLista: map['id_lista'] as int
     );
   }
 }

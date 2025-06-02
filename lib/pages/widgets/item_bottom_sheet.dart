@@ -79,22 +79,21 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                   return;
                 }
 
-                if (widget.lista.status! == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
+                if (widget.lista.status == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
                   return;
                 }
 
                 final quantidade = double.tryParse(_quantidadeController.text);
                 final preco = double.tryParse(_valorController.text);
                 if (quantidade == null) return;
-                if (widget.lista.status! == ListaStatus.emCurso && preco == null) return;
+                if (widget.lista.status == ListaStatus.emCurso && preco == null) return;
 
                 widget.onChange(Item(
+                  id: widget.item?.id,
                   titulo: _nomeController.text,
                   quantidade: quantidade,
                   unidade: ItemUnidade.by(_unidade),
                   valor: preco,
-                  promocional: widget.item?.promocional,
-                  qtPromocao: widget.item?.qtPromocao,
                   idLista: widget.lista.id!,
                 ));
 

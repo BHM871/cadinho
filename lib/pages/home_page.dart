@@ -1,6 +1,7 @@
 import 'package:cadinho/domain/lista.dart';
 import 'package:cadinho/pages/widgets/lista_bottom_sheet.dart';
 import 'package:cadinho/pages/widgets/lista_tile.dart';
+import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'lista_detalhe_page.dart';
@@ -34,7 +35,8 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(
         builder: (context) => ListaDetalhePage(
           lista: lista,
-          onFinish: _finalizarCompra,
+          viewModel: ItemViewModel(),
+          onChange: _atualizarLista,
         ),
       ),
     );
@@ -88,13 +90,11 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  void _finalizarCompra(Lista lista) async {
-    var map = lista.toMap();
-    map['status'] = ListaStatus.finalizado.value;
-    var temp = await viewModel.atualizar(Lista.fromMap(map));
+  void _atualizarLista(Lista lista) async {
+    var temp = await viewModel.atualizar(lista);
 
     if (temp == null) {
-      _showErroModal('Erro ao finalizar lista');
+      _showErroModal('Erro ao atualizar lista');
       return;
     }
 
@@ -105,6 +105,15 @@ class _HomePageState extends State<HomePage> {
         break;
       }
     }
+  }
+
+  void _abrirComparacao() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ComparacaoPage(listas: listas),
+      ),
+    );
   }
 
   void _showErroModal(String mensagem) {
@@ -121,15 +130,6 @@ class _HomePageState extends State<HomePage> {
             child: const Text('Ok'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _abrirComparacao() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ComparacaoPage(listas: listas),
       ),
     );
   }
