@@ -123,37 +123,41 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
       appBar: AppBar(
         title: Text('${lista.titulo} | ${lista.mercado}'),
       ),
-      body: lista.itens.isEmpty
-          ? const Center(child: Text('Nenhum produto na lista.'))
-          : ListView.builder(
-              itemCount: lista.itens.length,
-              itemBuilder: (context, index) {
-                final produto = lista.itens[index];
-                return ItemTile(
-                  produto: produto,
-                  onEdit: () => _editarProduto(index),
-                  onDelete: () => _excluirProduto(index),
-                );
-              },
-            ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        color: Colors.grey[200],
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Total: R\$ ${lista.total.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            lista.status == ListaStatus.finalizado
-                ? SizedBox.shrink()
-                : ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                  onPressed: () => _finalizarCompra(),
-                  child: const Text('Finalizar'),
-                ),
-          ],
+      body: SafeArea(
+        child: lista.itens.isEmpty
+            ? const Center(child: Text('Nenhum produto na lista.'))
+            : ListView.builder(
+                itemCount: lista.itens.length,
+                itemBuilder: (context, index) {
+                  final produto = lista.itens[index];
+                  return ItemTile(
+                    produto: produto,
+                    onEdit: () => _editarProduto(index),
+                    onDelete: () => _excluirProduto(index),
+                  );
+                },
+              ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          color: Colors.grey[200],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Total: R\$ ${lista.total.toStringAsFixed(2)}',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              lista.status == ListaStatus.finalizado
+                  ? SizedBox.shrink()
+                  : ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                    onPressed: () => _finalizarCompra(),
+                    child: const Text('Finalizar'),
+                  ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: lista.status == ListaStatus.finalizado

@@ -40,87 +40,89 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
       ),
       duration: const Duration(milliseconds: 100),
       curve: Curves.decelerate,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _nomeController,
-              decoration: const InputDecoration(labelText: 'Nome do Produto'),
-              textInputAction: TextInputAction.next,
-              onEditingComplete: () {
-                FocusScope.of(context).nextFocus();
-              },
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _quantidadeController,
-                    decoration: const InputDecoration(labelText: 'Quantidade'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: false),
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () {
-                      FocusScope.of(context).nextFocus();
-                    },
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nomeController,
+                decoration: const InputDecoration(labelText: 'Nome do Produto'),
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () {
+                  FocusScope.of(context).nextFocus();
+                },
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _quantidadeController,
+                      decoration: const InputDecoration(labelText: 'Quantidade'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () {
+                        FocusScope.of(context).nextFocus();
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: _unidade,
-                  onChanged: (value) {
-                    setState(() {
-                      _unidade = value!;
-                    });
-                  },
-                  items: ['kg', 'lt', 'un'].map((u) => DropdownMenuItem(
-                    value: u,
-                    child: Text(u),
-                  )).toList(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _valorController,
-              decoration: const InputDecoration(labelText: 'Preço'),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              textInputAction: TextInputAction.done,
-            ),
-            const SizedBox(height: 15),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-              child: const Text('Finalizar'),
-              onPressed: () {
-                if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty) {
-                  return;
-                }
-
-                if (widget.lista.status == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
-                  return;
-                }
-
-                final quantidade = double.tryParse(_quantidadeController.text);
-                final preco = double.tryParse(_valorController.text);
-                if (quantidade == null) return;
-                if (widget.lista.status == ListaStatus.emCurso && preco == null) return;
-
-                widget.onChange(Item(
-                  id: widget.item?.id,
-                  titulo: _nomeController.text,
-                  quantidade: quantidade,
-                  unidade: ItemUnidade.by(_unidade),
-                  valor: preco,
-                  idLista: widget.lista.id!,
-                ));
-
-                Navigator.of(context).pop();
-              },
-            ),
-            const SizedBox(height: 23),
-          ],
+                  const SizedBox(width: 10),
+                  DropdownButton<String>(
+                    value: _unidade,
+                    onChanged: (value) {
+                      setState(() {
+                        _unidade = value!;
+                      });
+                    },
+                    items: ['kg', 'lt', 'un'].map((u) => DropdownMenuItem(
+                      value: u,
+                      child: Text(u),
+                    )).toList(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _valorController,
+                decoration: const InputDecoration(labelText: 'Preço'),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textInputAction: TextInputAction.done,
+              ),
+              const SizedBox(height: 15),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                child: const Text('Finalizar'),
+                onPressed: () {
+                  if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty) {
+                    return;
+                  }
+        
+                  if (widget.lista.status == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
+                    return;
+                  }
+        
+                  final quantidade = double.tryParse(_quantidadeController.text);
+                  final preco = double.tryParse(_valorController.text);
+                  if (quantidade == null) return;
+                  if (widget.lista.status == ListaStatus.emCurso && preco == null) return;
+        
+                  widget.onChange(Item(
+                    id: widget.item?.id,
+                    titulo: _nomeController.text,
+                    quantidade: quantidade,
+                    unidade: ItemUnidade.by(_unidade),
+                    valor: preco,
+                    idLista: widget.lista.id!,
+                  ));
+        
+                  Navigator.of(context).pop();
+                },
+              ),
+              const SizedBox(height: 15),
+            ],
+          ),
         ),
       ),
     );

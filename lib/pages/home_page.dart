@@ -153,18 +153,20 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: listas.length,
-        itemBuilder: (context, index) {
-          final lista = listas[index];
-
-          return ListaTile(
-            lista: lista,
-            onClick: () => _abrirDetalhes(lista),
-            onEdit: () => _editarLista(index),
-            onDelete: () => _excluirLista(index),
-          );
-        },
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: listas.length,
+          itemBuilder: (context, index) {
+            final lista = listas[index];
+        
+            return ListaTile(
+              lista: lista,
+              onClick: () => _abrirDetalhes(lista),
+              onEdit: () => _editarLista(index),
+              onDelete: () => _excluirLista(index),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _adicionarLista,

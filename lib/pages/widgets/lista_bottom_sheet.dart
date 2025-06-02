@@ -54,75 +54,79 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
       ),
       duration: const Duration(milliseconds: 100),
       curve: Curves.decelerate,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _nomeController,
-            decoration: const InputDecoration(labelText: 'Nome da Lista'),
-            textInputAction: TextInputAction.next,
-            onEditingComplete: () {
-              FocusScope.of(context).nextFocus();
-            },
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nomeController,
+                decoration: const InputDecoration(labelText: 'Nome da Lista'),
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () {
+                  FocusScope.of(context).nextFocus();
+                },
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _merdacoController,
+                decoration: const InputDecoration(labelText: 'Supermercado'),
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () {
+                  FocusScope.of(context).nextFocus();
+                },
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _dataController,
+                decoration: InputDecoration(labelText: 'Data'),
+                textInputAction: TextInputAction.done,
+                onTap: () async {
+                  DateTime? date = await _selectDate(context);
+                  _dateTime = date; 
+          
+                  if (date != null) {
+                    _dataController.text = DateFormat('dd/MM/yyyy').format(date);
+                  } else {
+                    _dataController.text = '';
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
+              DropdownButton<String>(
+                value: _status,
+                onChanged: (value) {
+                  _status = value!;
+                  setState(() {});
+                },
+                items: ['PENDENTE', 'EM CURSO', 'FINALIZADO'].map((u) => DropdownMenuItem(
+                  value: u,
+                  child: Text(u),
+                )).toList(),
+              ),
+              const SizedBox(height: 15),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                child: const Text('Finalizar'),
+                onPressed: () {
+                  if (_nomeController.text.isEmpty) return;
+          
+                  widget.onChange(Lista(
+                    id: widget.lista?.id,
+                    titulo: _nomeController.text.trim(),
+                    mercado: _merdacoController.text.trim(),
+                    data: _dateTime,
+                    status: ListaStatus.by(_status),
+                    total: widget.lista?.total ?? 0
+                  ));
+          
+                  Navigator.of(context).pop();
+                },
+              ),
+              const SizedBox(height: 15),
+            ],
           ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _merdacoController,
-            decoration: const InputDecoration(labelText: 'Supermercado'),
-            textInputAction: TextInputAction.next,
-            onEditingComplete: () {
-              FocusScope.of(context).nextFocus();
-            },
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _dataController,
-            decoration: InputDecoration(labelText: 'Data'),
-            textInputAction: TextInputAction.done,
-            onTap: () async {
-              DateTime? date = await _selectDate(context);
-              _dateTime = date; 
-
-              if (date != null) {
-                _dataController.text = DateFormat('dd/MM/yyyy').format(date);
-              } else {
-                _dataController.text = '';
-              }
-            },
-          ),
-          const SizedBox(height: 10),
-          DropdownButton<String>(
-            value: _status,
-            onChanged: (value) {
-              _status = value!;
-              setState(() {});
-            },
-            items: ['PENDENTE', 'EM CURSO', 'FINALIZADO'].map((u) => DropdownMenuItem(
-              value: u,
-              child: Text(u),
-            )).toList(),
-          ),
-          const SizedBox(height: 15),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-            child: const Text('Finalizar'),
-            onPressed: () {
-              if (_nomeController.text.isEmpty) return;
-
-              widget.onChange(Lista(
-                id: widget.lista?.id,
-                titulo: _nomeController.text.trim(),
-                mercado: _merdacoController.text.trim(),
-                data: _dateTime,
-                status: ListaStatus.by(_status),
-                total: widget.lista?.total ?? 0
-              ));
-
-              Navigator.of(context).pop();
-            },
-          ),
-          const SizedBox(height: 23),
-        ],
+        ),
       ),
     );
   }
