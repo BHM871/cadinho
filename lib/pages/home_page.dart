@@ -4,7 +4,6 @@ import 'package:cadinho/pages/widgets/lista_tile.dart';
 import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
-import '../domain/item.dart';
 import 'lista_detalhe_page.dart';
 import 'comparacao_page.dart';
 
@@ -100,11 +99,15 @@ class _HomePageState extends State<HomePage> {
     _updateView();
   }
 
-  void _abrirComparacao() {
+  void _abrirComparacao(Lista lista) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ComparacaoPage(listas: listas),
+        builder: (context) => ComparacaoPage(
+          fonte: lista,
+          listas: listas,
+          itemViewModel: widget.itemViewModel,
+        ),
       ),
     );
   }
@@ -136,13 +139,6 @@ class _HomePageState extends State<HomePage> {
           width: 10 * 16,
           child: Image.asset('assets/icons/banner.png'),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
-            onPressed: _abrirComparacao,
-            tooltip: 'Comparar Listas',
-          ),
-        ],
       ),
       body: SafeArea(
         child: ListView.builder(
@@ -154,6 +150,7 @@ class _HomePageState extends State<HomePage> {
               lista: lista,
               viewModel: viewModel,
               onClick: () => _abrirDetalhes(lista),
+              onComp: () => _abrirComparacao(lista),
               onEdit: () => _editarLista(index),
               updateView: () => _updateView(),
             );

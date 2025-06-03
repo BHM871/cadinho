@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 class ListaTile extends StatelessWidget {
   final Lista lista;
   final ListaViewModel viewModel;
+  final VoidCallback onComp;
   final VoidCallback onEdit;
   final VoidCallback onClick;
   final VoidCallback updateView;
@@ -14,6 +15,7 @@ class ListaTile extends StatelessWidget {
     super.key,
     required this.lista,
     required this.viewModel,
+    required this.onComp,
     required this.onEdit,
     required this.onClick,
     required this.updateView,
@@ -40,7 +42,7 @@ class ListaTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Color.from(alpha: .4,blue: .9,red: .9,green: .9),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       margin: EdgeInsets.only(top: 8, right: 8, bottom: 0, left: 8),
       padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 5),
@@ -70,6 +72,7 @@ class ListaTile extends StatelessWidget {
                 viewModel.duplicar(lista);
                 updateView();
                 break;
+              case 'Comparar': onComp(); break;
               case 'Excluir':
                 viewModel.excluir(lista);
                 updateView();
@@ -80,6 +83,7 @@ class ListaTile extends StatelessWidget {
           itemBuilder: (_) => [
             const PopupMenuItem(value: 'Editar', child: Text('Editar')),
             const PopupMenuItem(value: 'Duplicar', child: Text('Duplicar')),
+            const PopupMenuItem(value: 'Comparar', child: Text('Comparar')),
             const PopupMenuItem(value: 'Excluir', child: Text('Excluir')),
           ],
         ),
