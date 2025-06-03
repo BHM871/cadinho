@@ -4,6 +4,7 @@ import 'package:cadinho/pages/widgets/lista_tile.dart';
 import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
+import '../domain/item.dart';
 import 'lista_detalhe_page.dart';
 import 'comparacao_page.dart';
 

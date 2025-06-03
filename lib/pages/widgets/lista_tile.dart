@@ -67,7 +67,7 @@ class ListaTile extends StatelessWidget {
             switch (valor) {
               case 'Editar': onEdit(); break;
               case 'Duplicar':
-                //duplicar
+                viewModel.duplicar(lista);
                 updateView();
                 break;
               case 'Excluir':

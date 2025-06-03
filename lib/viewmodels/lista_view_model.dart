@@ -1,11 +1,18 @@
 import 'package:cadinho/domain/lista.dart';
+import 'package:cadinho/repositories/item_repository.dart';
 import 'package:cadinho/repositories/lista_repository.dart';
+
+import '../domain/item.dart';
 
 class ListaViewModel {
 
   final ListaRepository repository;
+  final ItemRepository itemRepository;
 
-  const ListaViewModel({required this.repository});
+  const ListaViewModel({
+    required this.repository,
+    required this.itemRepository,
+  });
 
   Future<Lista?> peloId(int id) async {
     try {
@@ -54,6 +61,31 @@ class ListaViewModel {
       tmp['status'] = ListaStatus.finalizado.value;
 
       return await repository.atualizar(Lista.fromMap(tmp));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Lista?> duplicar(Lista lista) async {
+    try {
+      var tmp = lista.toMap();
+      tmp.remove('id');
+      tmp['titulo'] = '${tmp['titulo']} Cópia';
+
+      var nova = await repository.salvar(Lista.fromMap(tmp));
+      if (nova == null) return null;
+
+      var itens = await itemRepository.buscarTodos(lista.id!) ?? [];
+      for(Item i in itens) {
+        tmp = i.toMap();
+        tmp.remove('id');
+        tmp['id_lista'] = nova.id!;
+
+        var novo = (await itemRepository.salvar(Item.fromMap(tmp)))!;
+        nova.itens.add(novo);
+      }
+
+      return nova;
     } catch (e) {
       return null;
     }

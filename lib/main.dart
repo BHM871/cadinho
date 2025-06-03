@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
     const ListaRepository listaRepository = ListaRepository();
     const ItemRepository itemRepository = ItemRepository();
 
-    const ListaViewModel listaViewModel = ListaViewModel(repository: listaRepository);
-    const ItemViewModel itemViewModel = ItemViewModel(repository: itemRepository, listaRepository: listaRepository);
+    const ListaViewModel listaViewModel = ListaViewModel(repository: listaRepository, itemRepository: itemRepository);
+    const ItemViewModel itemViewModel = ItemViewModel(repository: itemRepository);
 
     return MaterialApp(
       title: 'Cadinho',

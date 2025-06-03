@@ -1,16 +1,13 @@
 import 'package:cadinho/domain/item.dart';
 import 'package:cadinho/domain/lista.dart';
 import 'package:cadinho/repositories/item_repository.dart';
-import 'package:cadinho/repositories/lista_repository.dart';
 
 class ItemViewModel {
 
   final ItemRepository repository;
-  final ListaRepository listaRepository;
 
   const ItemViewModel({
     required this.repository,
-    required this.listaRepository,
   });
 
   Future<Item?> peloId(int id) async {
@@ -51,19 +48,6 @@ class ItemViewModel {
       return true;
     } catch (e) {
       return false;
-    }
-  }
-
-  Future<Lista?> atualizarTotal(int idLista, double total) async {
-    try {
-      Lista lista = (await listaRepository.buscarId(idLista))!;
-      
-      var map = lista.toMap();
-      map['total'] = total;
-
-      return await listaRepository.atualizar(Lista.fromMap(map));
-    } catch (e) {
-      return null;
     }
   }
 }
