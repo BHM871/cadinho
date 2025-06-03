@@ -9,7 +9,8 @@ import 'comparacao_page.dart';
 
 class HomePage extends StatefulWidget {
   final ListaViewModel viewModel;
-  const HomePage({super.key, required this.viewModel});
+  final ItemViewModel itemViewModel;
+  const HomePage({super.key, required this.viewModel, required this.itemViewModel});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -23,10 +24,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     viewModel = widget.viewModel;
-    viewModel.buscarTodas().then((listas) {
+    viewModel.buscar().then((listas) {
       this.listas = listas ?? [];
       setState(() {});
     });
+  }
+
+  void _updateView() async {
+    listas = (await viewModel.buscar()) ?? [];
+    setState(() {});
   }
 
   void _abrirDetalhes(Lista lista) async {
@@ -35,7 +41,7 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(
         builder: (context) => ListaDetalhePage(
           lista: lista,
-          viewModel: ItemViewModel(),
+          viewModel: widget.itemViewModel,
           onChange: _atualizarLista,
         ),
       ),
@@ -48,16 +54,14 @@ class _HomePageState extends State<HomePage> {
       context: context,
       isScrollControlled: true,
       builder: (builder) => ListaBottomSheet(
+        viewModel: viewModel,
         onChange: (lista) async {
-          var temp = await viewModel.salvar(lista);
-
-          if (temp == null) {
+          if (lista == null) {
             _showErroModal('Erro ao salvar lista');
             return;
           }
           
-          listas.add(temp);
-          
+          listas.add(lista);
           setState(() {});
         }
       )
@@ -70,26 +74,18 @@ class _HomePageState extends State<HomePage> {
       isScrollControlled: true,
       builder: (builder) => ListaBottomSheet(
         lista: listas[index],
+        viewModel: viewModel,
         onChange: (lista) async {
-          var temp = await viewModel.atualizar(lista);
-
-          if (temp == null) {
+          if (lista == null) {
             _showErroModal('Erro ao salvar lista');
             return;
           }
           
-          listas[index] = temp;
-          
+          listas[index] = lista;
           setState(() {});
         }
       )
     );
-  }
-
-  void _excluirLista(int index) {
-    viewModel.excluir(listas[index]);
-    listas.removeAt(index);
-    setState(() {});
   }
 
   void _atualizarLista(Lista lista) async {
@@ -100,13 +96,7 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    for (int i = 0; i < listas.length; i++) {
-      if (listas[i].id == temp.id) {
-        listas[i] = temp;
-        setState(() {});
-        break;
-      }
-    }
+    _updateView();
   }
 
   void _abrirComparacao() {
@@ -161,9 +151,10 @@ class _HomePageState extends State<HomePage> {
         
             return ListaTile(
               lista: lista,
+              viewModel: viewModel,
               onClick: () => _abrirDetalhes(lista),
               onEdit: () => _editarLista(index),
-              onDelete: () => _excluirLista(index),
+              updateView: () => _updateView(),
             );
           },
         ),

@@ -1,16 +1,19 @@
 import 'package:cadinho/domain/item.dart';
+import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:flutter/material.dart';
 
 class ItemTile extends StatelessWidget {
+  final ItemViewModel viewModel;
   final Item produto;
   final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback updateView;
 
   const ItemTile({
     super.key,
+    required this.viewModel,
     required this.produto,
     required this.onEdit,
-    required this.onDelete,
+    required this.updateView,
   });
 
   @override
@@ -29,7 +32,13 @@ class ItemTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(icon: const Icon(Icons.edit, color: Colors.orange), onPressed: onEdit),
-            IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: onDelete),
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red), 
+              onPressed: () async {
+                await viewModel.excluir(produto);
+                updateView();
+              }
+            ),
           ],
         ),
       ),

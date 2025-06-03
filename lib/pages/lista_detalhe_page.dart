@@ -4,6 +4,8 @@ import 'package:cadinho/pages/widgets/item_tile.dart';
 import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:flutter/material.dart';
 
+import '../domain/item.dart';
+
 class ListaDetalhePage extends StatefulWidget {
   final Lista lista;
   final ItemViewModel viewModel;
@@ -25,11 +27,23 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
     viewModel = widget.viewModel;
     lista = widget.lista;
 
-    viewModel.buscarTodos(lista.id!).then((itens) {
+    viewModel.buscar(lista.id!).then((itens) {
       lista.itens = itens ?? [];
       setState(() {});
     });
   }
+
+  void _updateView() async {
+    lista.itens = (await viewModel.buscar(lista.id!)) ?? [];
+
+    lista.total = 0;
+    for(Item i in lista.itens) {
+      lista.total += (i.valor ?? 1) * i.quantidade;
+    }
+
+    setState(() {});
+    widget.onChange(lista);
+}
 
   void _adicionarProduto() async {
     await showModalBottomSheet(
@@ -37,16 +51,15 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
       isScrollControlled: true,
       builder: (_) => ItemBottomSheet(
         lista: lista,
+        viewModel: viewModel,
         onChange: (item) async {
-          var temp = await viewModel.salvar(item);
-
-          if (temp == null) {
+          if (item == null) {
             _showErroModal('Erro ao salvar produto');
             return;
           }
 
-          lista.itens.add(temp);
-          lista.total += (temp.valor ?? 1) * temp.quantidade;
+          lista.itens.add(item);
+          lista.total += (item.valor ?? 1) * item.quantidade;
           setState(() {});
 
           widget.onChange(lista);
@@ -61,18 +74,17 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
       isScrollControlled: true,
       builder: (_) => ItemBottomSheet(
         lista: lista,
+        viewModel: viewModel,
         item: lista.itens[index],
         onChange: (item) async {
-          var temp = await viewModel.atualizar(item);
-
-          if (temp == null) {
+          if (item == null) {
             _showErroModal('Erro ao salvar produto');
             return;
           }
 
           lista.total -= (lista.itens[index].valor ?? 1) * lista.itens[index].quantidade;
-          lista.total += (temp.valor ?? 1) * temp.quantidade;
-          lista.itens[index] = temp;
+          lista.total += (item.valor ?? 1) * item.quantidade;
+          lista.itens[index] = item;
           setState(() {});
 
           widget.onChange(lista);
@@ -81,21 +93,14 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
     );
   }
 
-  void _excluirProduto(int index) async {
-    viewModel.excluir(lista.itens[index]);
-    lista.total -= (lista.itens[index].valor ?? 1) * lista.itens[index].quantidade;
-    lista.itens.removeAt(index);
-    setState(() {});
-  }
-
   void _finalizarCompra() async {
     var map = lista.toMap();
     map['status'] = ListaStatus.finalizado.value;
 
     lista = Lista.fromMap(map);
-    lista.itens = await viewModel.buscarTodos(lista.id!) ?? [];
-    setState(() {});
+    lista.itens = (await viewModel.buscar(lista.id!)) ?? [];
 
+    setState(() {});
     widget.onChange(lista);
   }
 
@@ -132,8 +137,9 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
                   final produto = lista.itens[index];
                   return ItemTile(
                     produto: produto,
+                    viewModel: viewModel,
                     onEdit: () => _editarProduto(index),
-                    onDelete: () => _excluirProduto(index),
+                    updateView: () => _updateView(),
                   );
                 },
               ),

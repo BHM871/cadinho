@@ -1,19 +1,22 @@
 import 'package:cadinho/domain/lista.dart';
+import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ListaTile extends StatelessWidget {
   final Lista lista;
+  final ListaViewModel viewModel;
   final VoidCallback onEdit;
-  final VoidCallback onDelete;
   final VoidCallback onClick;
+  final VoidCallback updateView;
 
   const ListaTile({
     super.key,
     required this.lista,
+    required this.viewModel,
     required this.onEdit,
-    required this.onDelete,
     required this.onClick,
+    required this.updateView,
   });
 
   TextStyle? getStyle() {
@@ -61,11 +64,22 @@ class ListaTile extends StatelessWidget {
         onTap: onClick,
         trailing: PopupMenuButton<String>(
           onSelected: (valor) {
-            if (valor == 'Editar') onEdit();
-            if (valor == 'Excluir') onDelete();
+            switch (valor) {
+              case 'Editar': onEdit(); break;
+              case 'Duplicar':
+                //duplicar
+                updateView();
+                break;
+              case 'Excluir':
+                viewModel.excluir(lista);
+                updateView();
+                break;
+              default:
+            }
           },
           itemBuilder: (_) => [
             const PopupMenuItem(value: 'Editar', child: Text('Editar')),
+            const PopupMenuItem(value: 'Duplicar', child: Text('Duplicar')),
             const PopupMenuItem(value: 'Excluir', child: Text('Excluir')),
           ],
         ),

@@ -1,4 +1,7 @@
 import 'package:cadinho/config/database_config.dart';
+import 'package:cadinho/repositories/item_repository.dart';
+import 'package:cadinho/repositories/lista_repository.dart';
+import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
@@ -14,6 +17,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const ListaRepository listaRepository = ListaRepository();
+    const ItemRepository itemRepository = ItemRepository();
+
+    const ListaViewModel listaViewModel = ListaViewModel(repository: listaRepository);
+    const ItemViewModel itemViewModel = ItemViewModel(repository: itemRepository, listaRepository: listaRepository);
+
     return MaterialApp(
       title: 'Cadinho',
       debugShowCheckedModeBanner: false,
@@ -22,7 +31,8 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Montserrat',
       ),
       home: const HomePage(
-        viewModel: ListaViewModel(),
+        viewModel: listaViewModel,
+        itemViewModel: itemViewModel,
       ),
     );
   }

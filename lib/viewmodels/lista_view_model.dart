@@ -1,113 +1,61 @@
-import 'package:cadinho/config/database_config.dart';
 import 'package:cadinho/domain/lista.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:cadinho/repositories/lista_repository.dart';
 
 class ListaViewModel {
 
-  const ListaViewModel();
+  final ListaRepository repository;
 
-  Future<Lista?> buscarId(int id) async {
-    Database bd = await DatabaseConfig.get();
+  const ListaViewModel({required this.repository});
 
-    List<Map<String, Object?>>? listMap;
+  Future<Lista?> peloId(int id) async {
     try {
-      listMap = await bd.query(
-        'Lista', 
-        where: 'id = ?', whereArgs: [id], 
-        limit: 1
-      );
+      return await repository.buscarId(id);
     } catch (e) {
       return null;
     }
-
-    if (listMap.isEmpty) return null;
-
-    return Lista.fromMap(listMap[0]);
   }
 
-  Future<List<Lista>?> buscarTodas() async {
-    Database bd = await DatabaseConfig.get();
-
-    List<Map<String, Object?>>? listMap;
-    List<Lista> listas = [];
+  Future<List<Lista>?> buscar() async {
     try {
-      listMap = await bd.query('Lista');
+      return await repository.buscarTodas();
     } catch (e) {
       return null;
     }
-
-    if (listMap.isEmpty) return null;
-
-    for(Map<String, Object?> obj in listMap) {
-      listas.add(Lista.fromMap(obj));
-    }
-
-    return listas;
   }
-  
-  Future<Lista?> salvar(Lista lista) async {
-    Database db = await DatabaseConfig.get();
 
+  Future<Lista?> criar(Lista lista) async {
     try {
-      await db.transaction((trs) async { 
-        var map = lista.toMap();
-
-        await trs.insert('Lista', map);
-        map = (await trs.query(
-          'Lista', 
-          orderBy: 'id DESC', limit: 1
-        ))[0];
-
-        lista = Lista.fromMap(map);
-      });
+      return await repository.salvar(lista);
     } catch (e) {
       return null;
     }
-
-    return lista;
   }
 
   Future<Lista?> atualizar(Lista lista) async {
-    Database db = await DatabaseConfig.get();
-
     try {
-      await db.transaction((trs) async { 
-        var map = lista.toMap();
-
-        await trs.update(
-          'Lista', map, 
-          where: 'id = ?', whereArgs: [map['id']]
-        );
-        map = (await trs.query(
-          'Lista', 
-          where: 'id = ?', whereArgs: [map['id']]
-        ))[0];
-
-        lista = Lista.fromMap(map);
-      });
+      return await repository.atualizar(lista);
     } catch (e) {
       return null;
     }
-
-    return lista;
   }
 
   Future<bool> excluir(Lista lista) async {
-    Database db = await DatabaseConfig.get();
-
     try {
-      await db.transaction((trs) async { 
-        var map = lista.toMap();
-
-        await trs.delete(
-          'Lista', 
-          where: 'id = ?', whereArgs: [map['id']]
-        );
-      });
+      await repository.excluir(lista);
+      return true;
     } catch (e) {
       return false;
     }
+  }
 
-    return true;
+  Future<Lista?> finalizar(Lista lista) async {
+    try {
+      var tmp = lista.toMap();
+      tmp['status'] = ListaStatus.finalizado.value;
+
+      return await repository.atualizar(Lista.fromMap(tmp));
+    } catch (e) {
+      return null;
+    }
   }
 }

@@ -1,13 +1,21 @@
 import 'package:cadinho/domain/item.dart';
 import 'package:cadinho/domain/lista.dart';
+import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:flutter/material.dart';
 
 class ItemBottomSheet extends StatefulWidget {
-  final Function(Item) onChange;
+  final ItemViewModel viewModel;
   final Lista lista; 
   final Item? item;
+  final Function(Item?) onChange;
 
-  const ItemBottomSheet({super.key, required this.onChange, required this.lista, this.item});
+  const ItemBottomSheet({
+    super.key, 
+    required this.viewModel,
+    required this.lista,
+    this.item,
+    required this.onChange,
+  });
 
   @override
   State<ItemBottomSheet> createState() => _ItemBottomSheetState();
@@ -27,6 +35,40 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
     _quantidadeController.text = widget.item?.quantidade.toString() ?? '';
     _valorController.text = widget.item?.valor.toString() ?? '';
     _unidade = widget.item?.unidade.name ?? ItemUnidade.kg.name; 
+  }
+
+  void _click() {
+    if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty) {
+      return;
+    }
+    
+    if (widget.lista.status == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
+      return;
+    }
+    
+    final quantidade = double.tryParse(_quantidadeController.text);
+    final preco = double.tryParse(_valorController.text);
+    if (quantidade == null) return;
+    if (widget.lista.status == ListaStatus.emCurso && preco == null) return;
+    
+    Item? item = Item(
+      id: widget.item?.id,
+      titulo: _nomeController.text,
+      quantidade: quantidade,
+      unidade: ItemUnidade.by(_unidade),
+      valor: preco,
+      idLista: widget.lista.id!,
+    );
+
+    var future = widget.item == null
+        ? widget.viewModel.criar(item)
+        : widget.viewModel.atualizar(item);
+    
+    future.then((item) {
+      widget.onChange(item);
+    });
+    
+    Navigator.of(context).pop();
   }
 
   @override
@@ -93,32 +135,8 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
               const SizedBox(height: 15),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                onPressed: _click,
                 child: const Text('Finalizar'),
-                onPressed: () {
-                  if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty) {
-                    return;
-                  }
-        
-                  if (widget.lista.status == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
-                    return;
-                  }
-        
-                  final quantidade = double.tryParse(_quantidadeController.text);
-                  final preco = double.tryParse(_valorController.text);
-                  if (quantidade == null) return;
-                  if (widget.lista.status == ListaStatus.emCurso && preco == null) return;
-        
-                  widget.onChange(Item(
-                    id: widget.item?.id,
-                    titulo: _nomeController.text,
-                    quantidade: quantidade,
-                    unidade: ItemUnidade.by(_unidade),
-                    valor: preco,
-                    idLista: widget.lista.id!,
-                  ));
-        
-                  Navigator.of(context).pop();
-                },
               ),
               const SizedBox(height: 15),
             ],

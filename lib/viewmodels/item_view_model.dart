@@ -1,116 +1,69 @@
-import 'package:cadinho/config/database_config.dart';
 import 'package:cadinho/domain/item.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:cadinho/domain/lista.dart';
+import 'package:cadinho/repositories/item_repository.dart';
+import 'package:cadinho/repositories/lista_repository.dart';
 
 class ItemViewModel {
 
-  const ItemViewModel();
+  final ItemRepository repository;
+  final ListaRepository listaRepository;
 
-  Future<Item?> buscarId(int id) async {
-    Database bd = await DatabaseConfig.get();
+  const ItemViewModel({
+    required this.repository,
+    required this.listaRepository,
+  });
 
-    List<Map<String, Object?>>? listMap;
+  Future<Item?> peloId(int id) async {
     try {
-      listMap = await bd.query(
-        'Item', 
-        where: 'id = ?', whereArgs: [id], 
-        limit: 1
-      );
+      return await repository.buscarId(id);
     } catch (e) {
       return null;
     }
-
-    if (listMap.isEmpty) return null;
-
-    return Item.fromMap(listMap[0]);
   }
 
-  Future<List<Item>?> buscarTodos(int idLista) async {
-    Database bd = await DatabaseConfig.get();
-
-    List<Map<String, Object?>>? listMap;
-    List<Item> items = [];
+  Future<List<Item>?> buscar(int idLista) async {
     try {
-      listMap = await bd.query(
-        'Item',
-        where: 'id_lista = ?', whereArgs: [idLista]
-      );
+      return await repository.buscarTodos(idLista);
     } catch (e) {
       return null;
     }
-
-    if (listMap.isEmpty) return null;
-
-    for(Map<String, Object?> obj in listMap) {
-      items.add(Item.fromMap(obj));
-    }
-
-    return items;
   }
-  
-  Future<Item?> salvar(Item item) async {
-    Database db = await DatabaseConfig.get();
 
+  Future<Item?> criar(Item item) async {
     try {
-      await db.transaction((trs) async { 
-        var map = item.toMap();
-
-        await trs.insert('Item', map);
-        map = (await trs.query(
-          'Item', 
-          orderBy: 'id DESC', limit: 1
-        ))[0];
-
-        item = Item.fromMap(map);
-      });
+      return await repository.salvar(item);
     } catch (e) {
       return null;
     }
-
-    return item;
   }
 
   Future<Item?> atualizar(Item item) async {
-    Database db = await DatabaseConfig.get();
-
     try {
-      await db.transaction((trs) async { 
-        var map = item.toMap();
-
-        await trs.update(
-          'Item', map, 
-          where: 'id = ?', whereArgs: [map['id']]
-        );
-        map = (await trs.query(
-          'Item', 
-          where: 'id = ?', whereArgs: [map['id']]
-        ))[0];
-
-        item = Item.fromMap(map);
-      });
+      return await repository.atualizar(item);
     } catch (e) {
-      return null;
+        return null;
     }
-
-    return item;
   }
 
   Future<bool> excluir(Item item) async {
-    Database db = await DatabaseConfig.get();
-
     try {
-      await db.transaction((trs) async { 
-        var map = item.toMap();
-
-        await trs.delete(
-          'Item', 
-          where: 'id = ?', whereArgs: [map['id']]
-        );
-      });
+      await repository.excluir(item);
+      return true;
     } catch (e) {
       return false;
     }
+  }
 
-    return true;
+  Future<Lista?> atualizarTotal(int idLista, double total) async {
+    try {
+      Lista lista = (await listaRepository.buscarId(idLista))!;
+      
+      var map = lista.toMap();
+      map['total'] = total;
+
+      return await listaRepository.atualizar(Lista.fromMap(map));
+    } catch (e) {
+      return null;
+    }
   }
 }

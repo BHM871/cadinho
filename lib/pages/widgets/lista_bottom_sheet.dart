@@ -1,12 +1,14 @@
 import 'package:cadinho/domain/lista.dart';
+import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ListaBottomSheet extends StatefulWidget {
-  final Function(Lista) onChange;
   final Lista? lista;
+  final ListaViewModel viewModel;
+  final Function(Lista?) onChange;
 
-  const ListaBottomSheet({super.key, required this.onChange, this.lista});
+  const ListaBottomSheet({super.key, required this.viewModel, required this.onChange, this.lista});
 
   @override
   State<ListaBottomSheet> createState() => _ListaBottomSheetState();
@@ -41,6 +43,29 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
     );
     
     return picked;
+  }
+
+  void _click() {
+    if (_nomeController.text.isEmpty) return;
+    
+    Lista? lista = Lista(
+      id: widget.lista?.id,
+      titulo: _nomeController.text.trim(),
+      mercado: _merdacoController.text.trim(),
+      data: _dateTime,
+      status: ListaStatus.by(_status),
+      total: widget.lista?.total ?? 0
+    );
+
+    var future = widget.lista == null
+        ? widget.viewModel.criar(lista)
+        : widget.viewModel.atualizar(lista);
+    
+    future.then((lista) {
+      widget.onChange(lista);
+    });
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -107,21 +132,8 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
               const SizedBox(height: 15),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                onPressed: _click,
                 child: const Text('Finalizar'),
-                onPressed: () {
-                  if (_nomeController.text.isEmpty) return;
-          
-                  widget.onChange(Lista(
-                    id: widget.lista?.id,
-                    titulo: _nomeController.text.trim(),
-                    mercado: _merdacoController.text.trim(),
-                    data: _dateTime,
-                    status: ListaStatus.by(_status),
-                    total: widget.lista?.total ?? 0
-                  ));
-          
-                  Navigator.of(context).pop();
-                },
               ),
               const SizedBox(height: 15),
             ],
