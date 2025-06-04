@@ -60,10 +60,10 @@ class DatabaseConfig {
     await db.execute("""CREATE TABLE Item (
       id            INTEGER PRIMARY KEY,
       titulo        TEXT    CHECK(LENGTH(titulo) <= 100)                    NOT NULL,
-      valor         REAL    CHECK(valor > 0 AND valor <= 500)               DEFAULT 1,
+      valor         REAL    CHECK(valor > 0 AND valor <= 10000)               DEFAULT 1,
       quantidade    REAL    CHECK(quantidade > 0)                           NOT NULL DEFAULT 1,
       unidade       TEXT    CHECK(unidade IN('kg', 'lt', 'un'))             NOT NULL DEFAULT 'kg',
-      promocional   REAL    CHECK(promocional > 0 AND promocional <= valor),
+      promocional   REAL    CHECK(promocional > 0 AND promocional <= 10000),
       qt_promocao   INTEGER CHECK(qt_promocao > 1),
       id_lista      INTEGER CHECK(id_lista > 0)                             NOT NULL,
       FOREIGN KEY(id_lista) REFERENCES Lista(id) ON DELETE CASCADE

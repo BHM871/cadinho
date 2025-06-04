@@ -25,6 +25,8 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
   final _nomeController = TextEditingController();
   final _quantidadeController = TextEditingController();
   final _valorController = TextEditingController();
+  final _promocionalController = TextEditingController();
+  final _qtPromocaoController = TextEditingController();
   String _unidade = ItemUnidade.kg.name;
 
   @override
@@ -32,12 +34,14 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
     super.initState();
 
     _nomeController.text = widget.item?.titulo ?? '';
-    _quantidadeController.text = widget.item?.quantidade.toString() ?? '';
-    _valorController.text = widget.item?.valor.toString() ?? '';
+    _quantidadeController.text = widget.item?.quantidade.toString().replaceAll(".", ",") ?? '';
+    _valorController.text = widget.item?.valor.toString().replaceAll(".", ",") ?? '';
+    _promocionalController.text = widget.item?.promocional?.toString().replaceAll(".", ",") ?? '';
+    _qtPromocaoController.text = widget.item?.qtPromocao?.toString().replaceAll(".", ",") ?? '';
     _unidade = widget.item?.unidade.name ?? ItemUnidade.kg.name; 
   }
 
-  void _click() {
+  void _click() async {
     if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty) {
       return;
     }
@@ -46,10 +50,66 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
       return;
     }
     
+    if (_valorController.text.contains(",")) {
+      _valorController.text = _valorController.text
+          .replaceAll(",", ".");
+    }
+
+    if (_quantidadeController.text.contains(",")) {
+      _quantidadeController.text = _quantidadeController.text
+          .replaceAll(",", ".");
+    }
+
     final quantidade = double.tryParse(_quantidadeController.text);
     final preco = double.tryParse(_valorController.text);
     if (quantidade == null) return;
     if (widget.lista.status == ListaStatus.emCurso && preco == null) return;
+
+    if (_promocionalController.text.contains(",")) {
+      _promocionalController.text = _promocionalController.text
+        .replaceAll(",", ".");
+    }
+
+    double? promocional = double.tryParse(_promocionalController.text);
+    int? qtPromocao = int.tryParse(_qtPromocaoController.text);
+
+    if (promocional != null) {
+      if (qtPromocao == null || qtPromocao <= 1) return;
+
+      if (quantidade % qtPromocao != 0) {
+        bool? stop = await showDialog<bool>(
+          context: context,
+          builder: (builder) {
+            return AlertDialog(
+              title: const Text('Atenção'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Você não pegou itens suficientes para ganhar promoção'),
+                  const SizedBox(height: 15,),
+                  Text('Pegue mais ${quantidade % qtPromocao} itens para pagar o valor promocional.'),
+                  const SizedBox(height: 15,),
+                  const Text('Deseja pegar mais ou menos itens?'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text('Sim'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text('Não'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (stop != null && stop) return;
+      }
+    }
     
     Item? item = Item(
       id: widget.item?.id,
@@ -57,6 +117,8 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
       quantidade: quantidade,
       unidade: ItemUnidade.by(_unidade),
       valor: preco,
+      promocional: promocional,
+      qtPromocao: qtPromocao,
       idLista: widget.lista.id!,
     );
 
@@ -130,6 +192,28 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                 controller: _valorController,
                 decoration: const InputDecoration(labelText: 'Preço'),
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () {
+                  FocusScope.of(context).nextFocus();
+                },
+              ),
+              const SizedBox(height: 10),
+              const Text('Itens com Promoção'),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _promocionalController,
+                decoration: const InputDecoration(labelText: 'Valor promocional'),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                textInputAction: TextInputAction.next,
+                onEditingComplete: () {
+                  FocusScope.of(context).nextFocus();
+                },
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _qtPromocaoController,
+                decoration: const InputDecoration(labelText: 'A partir de quantos itens'),
+                keyboardType: const TextInputType.numberWithOptions(decimal: false),
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 15),

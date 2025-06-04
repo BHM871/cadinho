@@ -38,12 +38,12 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
 
     lista.total = 0;
     for(Item i in lista.itens) {
-      lista.total += (i.valor ?? 1) * i.quantidade;
+      lista.total += i.getValorTotal();
     }
 
     setState(() {});
     widget.onChange(lista);
-}
+  }
 
   void _adicionarProduto() async {
     await showModalBottomSheet(
@@ -59,7 +59,7 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
           }
 
           lista.itens.add(item);
-          lista.total += (item.valor ?? 1) * item.quantidade;
+          lista.total += item.getValorTotal();
           setState(() {});
 
           widget.onChange(lista);
@@ -82,8 +82,8 @@ class _ListaDetalhePageState extends State<ListaDetalhePage> {
             return;
           }
 
-          lista.total -= (lista.itens[index].valor ?? 1) * lista.itens[index].quantidade;
-          lista.total += (item.valor ?? 1) * item.quantidade;
+          lista.total -= lista.itens[index].getValorTotal();
+          lista.total += item.getValorTotal();
           lista.itens[index] = item;
           setState(() {});
 

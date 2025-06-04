@@ -23,6 +23,23 @@ class Item {
     this.lista
   });
 
+  double getValorTotal() {
+    double out = 0;
+    var val = valor ?? 1;
+    var qtNormal = quantidade;
+
+    if (promocional != null && qtPromocao != null) {
+      var promocionalQuantidade = (quantidade / qtPromocao!).toInt();
+      qtNormal = quantidade % qtPromocao!;
+
+      out += promocional! * promocionalQuantidade;
+    }
+    
+    out += qtNormal * val; 
+
+    return out;
+  }
+
   Map<String, Object?> toMap() {
     var map = <String, Object?> {};
 
