@@ -2,13 +2,11 @@ import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 
 class ImportarDialog extends StatefulWidget {
-  final ListaViewModel viewModel;
-  final Function() updateView;
+  final Function(String) onImportar;
 
   const ImportarDialog({
     super.key,
-    required this.viewModel,
-    required this.updateView,
+    required this.onImportar,
   });
 
   @override
@@ -20,10 +18,7 @@ class _ImportDialog extends State<ImportarDialog> {
   final _importarController = TextEditingController();
 
   void _click() {
-    widget.viewModel.importar(_importarController.text.trim()).then((lista) {
-      if (lista == null) return;
-      widget.updateView();
-    });
+    widget.onImportar(_importarController.text.trim());
     Navigator.of(context).pop();
   }
 

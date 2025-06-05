@@ -100,6 +100,16 @@ class _HomePageState extends State<HomePage> {
     _updateView();
   }
 
+  void _importarLista(String encoded) async {
+    Lista? lista = await viewModel.importar(encoded);
+    if (lista == null) {
+      _showErroModal('Erro ao importar lista');
+      return;
+    }
+
+    _updateView();
+  }
+
   void _abrirComparacao(Lista lista) {
     Navigator.push(
       context,
@@ -148,8 +158,7 @@ class _HomePageState extends State<HomePage> {
                   showDialog(
                     context: context,
                     builder: (builder) => ImportarDialog(
-                      viewModel: viewModel,
-                      updateView: _updateView,
+                      onImportar: _importarLista,
                     ),
                   );
                   break;
