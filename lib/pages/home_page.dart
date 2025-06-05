@@ -1,4 +1,5 @@
 import 'package:cadinho/domain/lista.dart';
+import 'package:cadinho/pages/widgets/importar_dialog.dart';
 import 'package:cadinho/pages/widgets/lista_bottom_sheet.dart';
 import 'package:cadinho/pages/widgets/lista_tile.dart';
 import 'package:cadinho/viewmodels/item_view_model.dart';
@@ -139,6 +140,27 @@ class _HomePageState extends State<HomePage> {
           width: 10 * 16,
           child: Image.asset('assets/icons/banner.png'),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (valor) {
+              switch(valor) {
+                case 'Importar':
+                  showDialog(
+                    context: context,
+                    builder: (builder) => ImportarDialog(
+                      viewModel: viewModel,
+                      updateView: _updateView,
+                    ),
+                  );
+                  break;
+                default: break;
+              }
+            },
+            itemBuilder: (_) => [
+              const PopupMenuItem(value: 'Importar', child: Text('Importar')),
+            ],
+          ),
+        ],
       ),
       body: SafeArea(
         child: ListView.builder(

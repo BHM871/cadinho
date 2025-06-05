@@ -117,4 +117,32 @@ class ListaViewModel {
       return false;
     }
   }
+
+  Future<Lista?> importar(String encoded) async {
+    try {
+      Lista? lista = serializerService.decode(encoded);
+      if (lista == null) return null;
+
+      var map = lista.toMap();
+      map.remove('id');
+
+      var itens = lista.itens;
+      lista = await repository.salvar(Lista.fromMap(map));
+      if (lista == null) return null;
+
+      for (Item item in itens) {
+        map = item.toMap();
+        map.remove('id');
+
+        var tmp = await itemRepository.salvar(Item.fromMap(map));
+        if (tmp == null) continue;
+
+        lista.itens.add(tmp);
+      }
+
+      return lista;
+    } catch (e) {
+      return null;
+    }
+  }
 }
