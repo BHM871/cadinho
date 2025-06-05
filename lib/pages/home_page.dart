@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
         child: listas.isEmpty
-            ? const Center(child: Text('Nenhuma lista foi inserida'))
+            ? const Center(child: Text('Crie uma lista de compras ao clicar no botão do canto inferior.'))
             : ListView.builder(
                 itemCount: listas.length,
                 itemBuilder: (context, index) {
