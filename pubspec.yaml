@@ -108,4 +108,4 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/icons/mipmap.png"               # Caminho para sua imagem
   adaptive_icon_background: "#FFFFFF"                 # Cor de fundo (Android 8+)
-  adaptive_icon_foreground: "assets/icons/mipmap.png" # Ícone adaptativo
+  adaptive_icon_foreground: "assets/icons/mipmap.ico" # Ícone adaptativo
