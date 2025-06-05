@@ -5,7 +5,10 @@ class ShareService {
   const ShareService();
 
   Future<bool> share(String content) async {
-    ShareParams params = ShareParams();
+    ShareParams params = ShareParams(
+      title: "Compartilhando Lista",
+      text: content
+    );
 
     ShareResult result = await SharePlus.instance.share(params);
 

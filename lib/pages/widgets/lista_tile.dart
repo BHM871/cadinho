@@ -73,6 +73,9 @@ class ListaTile extends StatelessWidget {
                 updateView();
                 break;
               case 'Comparar': onComp(); break;
+              case 'Compartilhar':
+                viewModel.compartilhar(lista);
+                break;
               case 'Excluir':
                 viewModel.excluir(lista);
                 updateView();
@@ -84,6 +87,7 @@ class ListaTile extends StatelessWidget {
             const PopupMenuItem(value: 'Editar', child: Text('Editar')),
             const PopupMenuItem(value: 'Duplicar', child: Text('Duplicar')),
             const PopupMenuItem(value: 'Comparar', child: Text('Comparar')),
+            const PopupMenuItem(value: 'Compartilhar', child: Text('Compartilhar')),
             const PopupMenuItem(value: 'Excluir', child: Text('Excluir')),
           ],
         ),
