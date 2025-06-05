@@ -163,21 +163,23 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: listas.length,
-          itemBuilder: (context, index) {
-            final lista = listas[index];
-        
-            return ListaTile(
-              lista: lista,
-              viewModel: viewModel,
-              onClick: () => _abrirDetalhes(lista),
-              onComp: () => _abrirComparacao(lista),
-              onEdit: () => _editarLista(index),
-              updateView: () => _updateView(),
-            );
-          },
-        ),
+        child: listas.isEmpty
+            ? const Center(child: Text('Nenhuma lista foi inserida'))
+            : ListView.builder(
+                itemCount: listas.length,
+                itemBuilder: (context, index) {
+                  final lista = listas[index];
+              
+                  return ListaTile(
+                    lista: lista,
+                    viewModel: viewModel,
+                    onClick: () => _abrirDetalhes(lista),
+                    onComp: () => _abrirComparacao(lista),
+                    onEdit: () => _editarLista(index),
+                    updateView: () => _updateView(),
+                  );
+                },
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _adicionarLista,
