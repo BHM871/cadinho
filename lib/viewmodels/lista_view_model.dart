@@ -133,6 +133,7 @@ class ListaViewModel {
       for (Item item in itens) {
         map = item.toMap();
         map.remove('id');
+        map['id_lista'] = lista.id!;
 
         var tmp = await itemRepository.salvar(Item.fromMap(map));
         if (tmp == null) continue;
