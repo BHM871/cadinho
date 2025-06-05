@@ -27,7 +27,7 @@ class ListaTile extends StatelessWidget {
     }
 
     if (lista.status == ListaStatus.emCurso) {
-      return TextStyle(color: Colors.yellow);
+      return TextStyle(color: Colors.orange);
     }
 
     if (lista.status == ListaStatus.finalizado) {
