@@ -97,7 +97,13 @@ class SerializerService {
       if (map[attribute] == null) return null;
     }
 
-    return Lista.fromMap(map);
+    var lista = Lista.fromMap(map);
+
+    if (map.containsKey('itens')) {
+      lista.itens = map['itens'] as List<Item>;
+    }
+
+    return lista;
   }
 
   List<Item>? _decodeItens(String encoded) {
