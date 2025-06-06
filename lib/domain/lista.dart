@@ -10,12 +10,12 @@ class Lista {
   double total;
 
   Lista({
-    this.id, 
-    required this.titulo, 
-    this.mercado, 
-    this.data, 
-    required this.status, 
-    this.total = 0, 
+    this.id,
+    required this.titulo,
+    this.mercado,
+    this.data,
+    required this.status,
+    this.total = 0,
     List<Item>? itens
   }) : itens = itens ?? [];
 
@@ -27,15 +27,8 @@ class Lista {
     }
 
     map['titulo'] = titulo;
-
-    if (mercado != null) {
-      map['mercado'] = mercado;
-    }
-
-    if (data != null) {
-      map['data'] = data!.toIso8601String();
-    }
-
+    map['mercado'] = mercado;
+    map['data'] = data?.toIso8601String();
     map['status'] = status.value;
     map['total'] = total;
 

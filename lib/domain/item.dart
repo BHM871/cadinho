@@ -12,9 +12,9 @@ class Item {
   Lista? lista;
 
   Item({
-    this.id, 
-    required this.titulo, 
-    required this.valor, 
+    this.id,
+    required this.titulo,
+    required this.valor,
     required this.quantidade,
     required this.unidade,
     this.promocional,
@@ -34,8 +34,8 @@ class Item {
 
       out += promocional! * promocionalQuantidade;
     }
-    
-    out += qtNormal * val; 
+
+    out += qtNormal * val;
 
     return out;
   }
@@ -48,22 +48,11 @@ class Item {
     }
 
     map['titulo'] = titulo;
-
-    if (valor != null) {
-      map['valor'] = valor;
-    }
-
+    map['valor'] = valor;
     map['quantidade'] = quantidade;
     map['unidade'] = unidade.name;
-
-    if (promocional != null) {
-      map['promocional'] = promocional;
-    }
-
-    if (qtPromocao != null) {
-      map['qt_promocao'] = qtPromocao;
-    }
-
+    map['promocional'] = promocional;
+    map['qt_promocao'] = qtPromocao;
     map['id_lista'] = lista?.id ?? idLista;
 
     return map;
