@@ -150,35 +150,15 @@ class _HomePageState extends State<HomePage> {
           width: 10 * 16,
           child: Image.asset('assets/icons/banner.png'),
         ),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (valor) {
-              switch(valor) {
-                case 'Importar':
-                  showDialog(
-                    context: context,
-                    builder: (builder) => ImportarDialog(
-                      onImportar: _importarLista,
-                    ),
-                  );
-                  break;
-                default: break;
-              }
-            },
-            itemBuilder: (_) => [
-              const PopupMenuItem(value: 'Importar', child: Text('Importar')),
-            ],
-          ),
-        ],
       ),
       body: SafeArea(
         child: listas.isEmpty
-            ? const Center(child: Text('Crie uma lista de compras ao clicar no botão do canto inferior.'))
+            ? const Center(child: Text('Crie ou importe uma lista no botão abaixo.'))
             : ListView.builder(
                 itemCount: listas.length,
                 itemBuilder: (context, index) {
                   final lista = listas[index];
-              
+
                   return ListaTile(
                     lista: lista,
                     viewModel: viewModel,
