@@ -1,4 +1,3 @@
-import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 
 class ImportarDialog extends StatefulWidget {

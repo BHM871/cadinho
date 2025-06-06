@@ -1,4 +1,5 @@
 import 'package:cadinho/domain/lista.dart';
+import 'package:cadinho/pages/widgets/importar_dialog.dart';
 import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,8 +8,15 @@ class ListaBottomSheet extends StatefulWidget {
   final Lista? lista;
   final ListaViewModel viewModel;
   final Function(Lista?) onChange;
+  final Function(String) onImporte;
 
-  const ListaBottomSheet({super.key, required this.viewModel, required this.onChange, this.lista});
+  const ListaBottomSheet({
+    super.key,
+    this.lista,
+    required this.viewModel,
+    required this.onChange,
+    required this.onImporte,
+  });
 
   @override
   State<ListaBottomSheet> createState() => _ListaBottomSheetState();
@@ -41,13 +49,13 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-    
+
     return picked;
   }
 
   void _click() {
     if (_nomeController.text.isEmpty) return;
-    
+
     Lista? lista = Lista(
       id: widget.lista?.id,
       titulo: _nomeController.text.trim(),
@@ -60,7 +68,7 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
     var future = widget.lista == null
         ? widget.viewModel.criar(lista)
         : widget.viewModel.atualizar(lista);
-    
+
     future.then((lista) {
       widget.onChange(lista);
     });
@@ -84,6 +92,27 @@ class _ListaBottomSheetState extends State<ListaBottomSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+
+                        showDialog(
+                          context: context,
+                          builder: (builder) => ImportarDialog(
+                            onImportar: widget.onImporte,
+                          ),
+                        );
+                      },
+                      child: const Text('Importe'),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
               TextField(
                 controller: _nomeController,
                 decoration: const InputDecoration(labelText: 'Nome da Lista'),

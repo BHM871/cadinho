@@ -1,12 +1,12 @@
 import 'package:cadinho/domain/lista.dart';
-import 'package:cadinho/pages/widgets/importar_dialog.dart';
 import 'package:cadinho/pages/widgets/lista_bottom_sheet.dart';
 import 'package:cadinho/pages/widgets/lista_tile.dart';
 import 'package:cadinho/viewmodels/item_view_model.dart';
 import 'package:cadinho/viewmodels/lista_view_model.dart';
 import 'package:flutter/material.dart';
-import 'lista_detalhe_page.dart';
+
 import 'comparacao_page.dart';
+import 'lista_detalhe_page.dart';
 
 class HomePage extends StatefulWidget {
   final ListaViewModel viewModel;
@@ -56,12 +56,13 @@ class _HomePageState extends State<HomePage> {
       isScrollControlled: true,
       builder: (builder) => ListaBottomSheet(
         viewModel: viewModel,
+        onImporte: _importarLista,
         onChange: (lista) async {
           if (lista == null) {
             _showErroModal('Erro ao salvar lista');
             return;
           }
-          
+
           listas.add(lista);
           setState(() {});
         }
@@ -76,12 +77,13 @@ class _HomePageState extends State<HomePage> {
       builder: (builder) => ListaBottomSheet(
         lista: listas[index],
         viewModel: viewModel,
+        onImporte: _importarLista,
         onChange: (lista) async {
           if (lista == null) {
             _showErroModal('Erro ao salvar lista');
             return;
           }
-          
+
           listas[index] = lista;
           setState(() {});
         }
