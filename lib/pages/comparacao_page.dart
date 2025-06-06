@@ -68,12 +68,12 @@ class _ComparacaoPageState extends State<ComparacaoPage> {
     int itemCount = max(fonte.itens.length, compare?.itens.length ?? 0);
     for(int index = 0; index < itemCount; index++) {
       if (index < fonte.itens.length) {
-        totalValor -= (fonte.itens[index].valor ?? 1) * fonte.itens[index].quantidade;
+        totalValor -= fonte.itens[index].getValorTotal();
         totalQuantidate -= fonte.itens[index].quantidade;
       }
 
       if (compare != null && index < compare!.itens.length) {
-        totalValor += (compare!.itens[index].valor ?? 1) * compare!.itens[index].quantidade;
+        totalValor += compare!.itens[index].getValorTotal();
         totalQuantidate += compare!.itens[index].quantidade;
       }
     }
