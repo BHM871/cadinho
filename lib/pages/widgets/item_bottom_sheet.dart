@@ -45,11 +45,11 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
     if (_nomeController.text.trim().isEmpty || _quantidadeController.text.trim().isEmpty) {
       return;
     }
-    
+
     if (widget.lista.status == ListaStatus.emCurso && _valorController.text.trim().isEmpty) {
       return;
     }
-    
+
     if (_valorController.text.contains(",")) {
       _valorController.text = _valorController.text
           .replaceAll(",", ".");
@@ -88,7 +88,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                 children: [
                   const Text('Você não pegou itens suficientes para ganhar promoção'),
                   const SizedBox(height: 15,),
-                  Text('Pegue mais ${quantidade % qtPromocao} itens para pagar o valor promocional.'),
+                  Text('Pegue mais ${(quantidade % qtPromocao).toInt()} itens para pagar o valor promocional.'),
                   const SizedBox(height: 15,),
                   const Text('Deseja pegar mais ou menos itens?'),
                 ],
@@ -110,7 +110,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
         if (stop != null && stop) return;
       }
     }
-    
+
     Item? item = Item(
       id: widget.item?.id,
       titulo: _nomeController.text,
