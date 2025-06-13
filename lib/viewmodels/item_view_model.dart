@@ -1,5 +1,4 @@
 import 'package:cadinho/domain/item.dart';
-import 'package:cadinho/domain/lista.dart';
 import 'package:cadinho/repositories/item_repository.dart';
 
 class ItemViewModel {
