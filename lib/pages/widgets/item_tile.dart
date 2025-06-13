@@ -27,7 +27,7 @@ class ItemTile extends StatelessWidget {
       padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 5),
       child: ListTile(
         title: Text(produto.titulo),
-        subtitle: Text('${produto.quantidade} ${produto.unidade.name} - R\$ ${produto.valor?.toStringAsFixed(2)}'),
+        subtitle: Text('${produto.quantidade} ${produto.unidade.name} - R\$ ${produto.valor?.toStringAsFixed(2) ?? 0.0}'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

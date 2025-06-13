@@ -62,7 +62,7 @@ class Item {
     return Item(
       id: map['id'] as int?,
       titulo: map['titulo'] as String,
-      valor: map['valor'] as double,
+      valor: map['valor'] as double?,
       quantidade: map['quantidade'] as double,
       unidade: ItemUnidade.by(map['unidade'] as String),
       promocional: map['promocional'] as double?,
